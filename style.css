@@ -5,3 +5,26 @@ html {
 body {
   background-color: antiquewhite;
 }
+header {
+  display: flex;
+  justify-content: center;
+}
+content {
+  display: flex;
+  justify-content: center;
+}
+.board-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  height: 600px;
+  width: 300px;
+}
+.grid-square {
+  height: 28px;
+  width: 28px;
+  border: 1px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
