@@ -87,11 +87,21 @@ const clearSquare = (posArr) => {
     masterGameArr[pos] = 0
   })
 }
+// -----------------------------------
+// goodToMove
+// Desc: checks if shape can move in the designated direction
+// Input: oldArr - required - array of old positions
+//        newArr - required - array of position the shap is being moved to
+//        dir - required - the direction the shape is trying to be moved
+// Output: 1 if able to move to the new position,
+//          0 if there is something in the way
+//          2 if it reached as far as it can go down
+// ------------------------------------
 const goodToMove = (oldArr, newArr, dir) => {
   console.log('goodToMove')
   if (newArr.some((num) => num > 199)) {
     console.log('greater than 199')
-    return false
+    return 2
   }
   let posInMaster = []
   newArr.forEach((pos) => {
@@ -99,7 +109,10 @@ const goodToMove = (oldArr, newArr, dir) => {
   })
   if (posInMaster.some((pos) => pos === 1)) {
     console.log('something in way')
-    return false
+    if (dir === 'down') {
+      return 2
+    }
+    return 0
   }
   console.log(`dir: ${dir}`)
   if (dir === 'right' || dir === 'left') {
@@ -108,13 +121,16 @@ const goodToMove = (oldArr, newArr, dir) => {
     for (let i = 0; i < currentRow.length; i++) {
       if (currentRow[i] !== newRow[i]) {
         console.log('at side edge')
-        return false
+        return 0
       }
     }
   }
 
-  return true
+  return 1
 }
+// --------------------------------------
+// findNewPos
+// ------------------------------------
 const findNewPos = (oldPosArr, dir) => {
   console.log('findNewPos')
   let newPosArr = []
@@ -154,10 +170,16 @@ const moveShape = (dir) => {
   console.log('move shape')
   let oldPosArr = currentShapeObj.curPosition
   let newPosArr = findNewPos(oldPosArr, dir)
-  if (goodToMove(oldPosArr, newPosArr, dir)) {
+  let canMove = goodToMove(oldPosArr, newPosArr, dir)
+  if (canMove === 1) {
     clearSquare(oldPosArr)
     fillSquare(newPosArr)
     currentShapeObj.curPosition = newPosArr
+  } else if (canMove === 2) {
+    oldPosArr.forEach((pos) => {
+      masterGameArr[pos] = 1
+    })
+    newShape()
   }
 }
 
