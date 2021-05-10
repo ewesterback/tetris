@@ -28,3 +28,6 @@ content {
   align-items: center;
   justify-content: center;
 }
+.filled {
+  background-color: aqua;
+}
