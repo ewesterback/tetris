@@ -5,8 +5,14 @@ console.log('hi')
 
 const gameGrid = document.querySelector('.board-container')
 const BODY = document.querySelector('body')
+const currentShapeObj = {
+  curPosition: [],
+  curShape: []
+}
 const masterGameArr = new Array(200)
-let currentShapeArr = []
+for (i = 0; i < masterGameArr.length; i++) {
+  masterGameArr[i] = 0
+}
 
 // ///////////////////////////////////
 // Functions
@@ -67,12 +73,11 @@ const setUpPage = () => {
 const fillSquare = (posArr, colorClass = 'filled') => {
   posArr.forEach((pos) => {
     document.getElementById(`pos${pos}`).className = `grid-square ${colorClass}`
-    masterGameArr[pos] = 1
   })
 }
 // ----------------------------------
 // clearSquare
-// Descr: HTML side to clear squares
+// Descr: HTML and javascript side to clear squares
 // I/O:
 //    input: posArr - array with positions (numeric)  - required
 // ----------------------------------
@@ -82,65 +87,77 @@ const clearSquare = (posArr) => {
     masterGameArr[pos] = 0
   })
 }
-// ------------------------------------
-// moveShape
-// Desc: Moves the shape based off of the direction (left, right, down)
-// ___________________________________
-const moveShape = (dir) => {
-  let oldPosArr = currentShapeArr
+const goodToMove = (oldArr, newArr, dir) => {
+  console.log('goodToMove')
+  if (newArr.some((num) => num > 199)) {
+    console.log('greater than 199')
+    return false
+  }
+  let posInMaster = []
+  newArr.forEach((pos) => {
+    posInMaster.push(masterGameArr[pos])
+  })
+  if (posInMaster.some((pos) => pos === 1)) {
+    console.log('something in way')
+    return false
+  }
+  console.log(`dir: ${dir}`)
+  if (dir === 'right' || dir === 'left') {
+    let currentRow = oldArr.map((pos) => Math.floor(pos / 10))
+    let newRow = newArr.map((pos) => Math.floor(pos / 10))
+    for (let i = 0; i < currentRow.length; i++) {
+      if (currentRow[i] !== newRow[i]) {
+        console.log('at side edge')
+        return false
+      }
+    }
+  }
+
+  return true
+}
+const findNewPos = (oldPosArr, dir) => {
+  console.log('findNewPos')
   let newPosArr = []
   switch (dir) {
     case 'down':
       newPosArr = oldPosArr.map((pos) => {
         return pos + 10
       })
-      clearSquare(oldPosArr)
-      fillSquare(newPosArr)
-      currentShapeArr = newPosArr
-      console.log(newPosArr)
-      console.log(oldPosArr)
-      console.log(currentShapeArr)
-      console.log('end')
       break
     //make sure to delete this case for final
     case 'up':
       newPosArr = oldPosArr.map((pos) => {
         return pos - 10
       })
-      clearSquare(oldPosArr)
-      fillSquare(newPosArr)
-      currentShapeArr = newPosArr
-      console.log(newPosArr)
-      console.log(oldPosArr)
-      console.log(currentShapeArr)
-      console.log('end')
       break
     case 'left':
       newPosArr = oldPosArr.map((pos) => {
         return pos - 1
       })
-      clearSquare(oldPosArr)
-      fillSquare(newPosArr)
-      currentShapeArr = newPosArr
-      console.log(newPosArr)
-      console.log(oldPosArr)
-      console.log(currentShapeArr)
-      console.log('end')
       break
     case 'right':
       newPosArr = oldPosArr.map((pos) => {
         return pos + 1
       })
-      clearSquare(oldPosArr)
-      fillSquare(newPosArr)
-      currentShapeArr = newPosArr
-      console.log(newPosArr)
-      console.log(oldPosArr)
-      console.log(currentShapeArr)
-      console.log('end')
       break
     default:
       return
+  }
+  return newPosArr
+}
+//
+// ------------------------------------
+// moveShape
+// Desc: Moves the shape based off of the direction (left, right, down)
+// ___________________________________
+const moveShape = (dir) => {
+  console.log('move shape')
+  let oldPosArr = currentShapeObj.curPosition
+  let newPosArr = findNewPos(oldPosArr, dir)
+  if (goodToMove(oldPosArr, newPosArr, dir)) {
+    clearSquare(oldPosArr)
+    fillSquare(newPosArr)
+    currentShapeObj.curPosition = newPosArr
   }
 }
 
@@ -148,12 +165,9 @@ const moveShape = (dir) => {
 // newShape
 // ----------------------------------
 const newShape = () => {
-  let newShapeArr = [4, 5, 14, 15]
-  currentShapeArr = newShapeArr
-  fillSquare(newShapeArr)
-  newShapeArr.forEach((pos) => {
-    masterGameArr[pos] = 1
-  })
+  let newPosArr = [4, 5, 14, 15]
+  currentShapeObj.curPosition = newPosArr
+  fillSquare(newPosArr)
 }
 
 // //////////////////////////////////////
