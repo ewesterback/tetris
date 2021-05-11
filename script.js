@@ -47,7 +47,6 @@ const setUpPage = () => {
       this.numPos = numPos
     }
     createGridSquare() {
-      //console.log('x')
       return this.createElement('div', {
         className: 'grid-square',
         id: `pos${this.numPos}`,
@@ -98,7 +97,6 @@ const clearSquare = (posArr) => {
 //          2 if it reached as far as it can go down
 // ------------------------------------
 const goodToMove = (oldArr, newArr, dir) => {
-  console.log('goodToMove')
   if (newArr.some((num) => num > 199)) {
     console.log('greater than 199')
     return 2
@@ -114,7 +112,6 @@ const goodToMove = (oldArr, newArr, dir) => {
     }
     return 0
   }
-  console.log(`dir: ${dir}`)
   if (dir === 'right' || dir === 'left') {
     let currentRow = oldArr.map((pos) => Math.floor(pos / 10))
     let newRow = newArr.map((pos) => Math.floor(pos / 10))
@@ -132,7 +129,6 @@ const goodToMove = (oldArr, newArr, dir) => {
 // findNewPos
 // ------------------------------------
 const findNewPos = (oldPosArr, dir) => {
-  console.log('findNewPos')
   let newPosArr = []
   switch (dir) {
     case 'down':
@@ -167,7 +163,6 @@ const findNewPos = (oldPosArr, dir) => {
 // Desc: Moves the shape based off of the direction (left, right, down)
 // ___________________________________
 const moveShape = (dir) => {
-  console.log('move shape')
   let oldPosArr = currentShapeObj.curPosition
   let newPosArr = findNewPos(oldPosArr, dir)
   let canMove = goodToMove(oldPosArr, newPosArr, dir)
@@ -187,15 +182,51 @@ const moveShape = (dir) => {
 // newShape
 // ----------------------------------
 const newShape = () => {
-  let newPosArr = [4, 5, 14, 15]
+  let starterShape = shapeMatrix[Math.floor(Math.random() * 4)]
+  console.log(starterShape)
+  let newPosArr = []
+  for (let i = 0; i < starterShape[0].length; i++) {
+    if (starterShape[0][i] === 1) {
+      newPosArr.push(starterShape[0][i] + i + 3)
+    }
+  }
+  for (let i = 0; i < starterShape[1].length; i++) {
+    if (starterShape[1][i] === 1) {
+      newPosArr.push(starterShape[1][i] + i + 13)
+    }
+  }
+  console.log(newPosArr)
+  //let newPosArr = [3, 4, 5, 15]
   currentShapeObj.curPosition = newPosArr
   fillSquare(newPosArr)
 }
-
+// ---------------------------------
+//  create shape matrix
+// --------------------------------
+const createShapeMatrix = () => {
+  const square = [
+    [1, 1],
+    [1, 1]
+  ]
+  const rightL = [
+    [0, 0, 1],
+    [1, 1, 1]
+  ]
+  const leftL = [
+    [1, 0, 0],
+    [1, 1, 1]
+  ]
+  const tshape = [
+    [0, 1, 0],
+    [1, 1, 1]
+  ]
+  return [square, rightL, leftL, tshape]
+}
 // //////////////////////////////////////
 // main code
 // //////////////////////////////////
 setUpPage()
+const shapeMatrix = createShapeMatrix()
 newShape()
 console.log('bye')
 
