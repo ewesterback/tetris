@@ -182,22 +182,24 @@ const moveShape = (dir) => {
 // newShape
 // ----------------------------------
 const newShape = () => {
-  let starterShape = shapeMatrix[Math.floor(Math.random() * 4)]
-  console.log(starterShape)
+  let randomNum = Math.floor(Math.random() * 7)
+  let starterShape = shapeMatrix[randomNum]
   let newPosArr = []
   for (let i = 0; i < starterShape[0].length; i++) {
     if (starterShape[0][i] === 1) {
       newPosArr.push(starterShape[0][i] + i + 3)
     }
   }
-  for (let i = 0; i < starterShape[1].length; i++) {
-    if (starterShape[1][i] === 1) {
-      newPosArr.push(starterShape[1][i] + i + 13)
+  if (starterShape.length > 1) {
+    for (let i = 0; i < starterShape[1].length; i++) {
+      if (starterShape[1][i] === 1) {
+        newPosArr.push(starterShape[1][i] + i + 13)
+      }
     }
   }
-  console.log(newPosArr)
   //let newPosArr = [3, 4, 5, 15]
   currentShapeObj.curPosition = newPosArr
+  currentShapeObj.curShape = starterShape
   fillSquare(newPosArr)
 }
 // ---------------------------------
@@ -220,7 +222,16 @@ const createShapeMatrix = () => {
     [0, 1, 0],
     [1, 1, 1]
   ]
-  return [square, rightL, leftL, tshape]
+  const zig = [
+    [1, 1, 0],
+    [0, 1, 1]
+  ]
+  const zag = [
+    [0, 1, 1],
+    [1, 1, 0]
+  ]
+  const pole = [[1, 1, 1, 1]]
+  return [square, rightL, leftL, tshape, zig, zag, pole]
 }
 // //////////////////////////////////////
 // main code
