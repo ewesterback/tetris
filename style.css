@@ -6,12 +6,19 @@ body {
   background-color: antiquewhite;
 }
 header {
-  display: flex;
-  justify-content: center;
+  grid-column: 2/3;
+  grid-row: 1/2;
+  background-color: yellow;
 }
 content {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr 300px 1fr;
+  grid-template-rows: 1fr 300px 300px 1fr;
+  gap: 0px 0px;
+}
+.gameboard {
+  grid-area: 2 / 2 / 4 / 3;
+  background-color: whitesmoke;
 }
 .board-container {
   display: flex;
@@ -30,4 +37,26 @@ content {
 }
 .filled {
   background-color: aqua;
+}
+.header {
+  grid-area: 1 / 2 / 2 / 3;
+}
+.gameboard {
+  grid-area: 2 / 2 / 4 / 3;
+}
+.upnext {
+  grid-area: 2 / 3 / 3 / 4;
+  background-color: #ffd9bf;
+}
+.how-to-play {
+  grid-area: 2 / 1 / 3 / 2;
+  background-color: #daffbf;
+}
+.score {
+  grid-area: 3 / 1 / 4 / 2;
+  background-color: #bfffee;
+}
+.game-controls {
+  grid-area: 3 / 3 / 4 / 4;
+  background-color: #bfcdff;
 }

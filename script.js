@@ -182,6 +182,7 @@ const moveShape = (dir) => {
 // newShape
 // ----------------------------------
 const newShape = () => {
+  checkRow()
   let randomNum = Math.floor(Math.random() * 7)
   let starterShape = shapeMatrix[randomNum]
   let newPosArr = []
@@ -197,7 +198,6 @@ const newShape = () => {
       }
     }
   }
-  //let newPosArr = [3, 4, 5, 15]
   currentShapeObj.curPosition = newPosArr
   currentShapeObj.curShape = starterShape
   fillSquare(newPosArr)
@@ -233,6 +233,104 @@ const createShapeMatrix = () => {
   const pole = [[1, 1, 1, 1]]
   return [square, rightL, leftL, tshape, zig, zag, pole]
 }
+// ---------
+// checkRow
+// --------
+const checkRow = () => {
+  let rowCheckCounter = 0
+  for (let i = 0; i < masterGameArr.length; i++) {
+    if (i % 10 === 0) {
+      rowCheckCounter = 0
+    }
+    if (masterGameArr[i] === 1) {
+      rowCheckCounter++
+    }
+    if (rowCheckCounter === 10) {
+      alert('row cleared')
+      let rowClearedNum = Math.floor(i / 10)
+      let rowStartingNum = rowClearedNum * 10
+      // rowToClear.forEach((pos) => {
+      //   document.getElementById(`pos${pos}`).className = `grid-square`
+      // })
+      masterGameArr.splice(rowStartingNum, 10)
+      masterGameArr.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+      for (let i = 0; i < masterGameArr.length; i++) {
+        if (masterGameArr[i] === 1) {
+          document.getElementById(`pos${i}`).className = `grid-square filled`
+        } else {
+          document.getElementById(`pos${i}`).className = `grid-square`
+        }
+      }
+    }
+  }
+}
+// -------------------------------
+// rotateShape
+// ------------------------------
+const rotateShape = () => {
+  let curShape = currentShapeObj.curShape
+  let newShape = []
+  //let row = 0
+  for (let j = curShape[0].length - 1; j >= 0; j--) {
+    let row = []
+    for (let i = 0; i < curShape.length; i++) {
+      row.push(curShape[i][j])
+    }
+    newShape.push(row)
+  }
+  let startNum = currentShapeObj.curPosition[0]
+  let newPosArr = []
+  let newPos = 0
+  for (let i = 0; i < newShape.length; i++) {
+    for (let j = 0; j < newShape[i].length; j++) {
+      if (newShape[i][j] === 1) {
+        newPos = newShape[i][j] + j + startNum + i * 10
+        newPosArr.push(newPos)
+      }
+    }
+  }
+  //console.log(newPosArr)
+  centerMass(currentShapeObj.curPosition, newPosArr)
+  //console.log(newPosArr)
+  clearSquare(currentShapeObj.curPosition)
+  fillSquare(newPosArr)
+  currentShapeObj.curPosition = newPosArr
+  currentShapeObj.curShape = newShape
+}
+// ----------------------
+// centerMass
+// -------------------
+const centerMass = (oldPosArr, newPosArr) => {
+  let oldxi = Math.floor(
+    oldPosArr.reduce((acc, pos) => {
+      return acc + (pos % 10)
+    }, 0) / 4
+  )
+  let oldyi = Math.floor(
+    oldPosArr.reduce((acc, pos) => {
+      return acc + Math.floor(pos / 10)
+    }, 0) / 4
+  )
+  let newxi = Math.floor(
+    newPosArr.reduce((acc, pos) => {
+      return acc + (pos % 10)
+    }, 0) / 4
+  )
+  let newyi = Math.floor(
+    newPosArr.reduce((acc, pos) => {
+      return acc + Math.floor(pos / 10)
+    }, 0) / 4
+  )
+  // console.log(oldPosArr)
+  // console.log(newPosArr)
+  // console.log(`${oldxi}, ${oldyi}`)
+  // console.log(`${newxi}, ${newyi}`)
+  for (let i = 0; i < newPosArr.length; i++) {
+    newPosArr[i] = newPosArr[i] + oldxi - newxi + (oldyi - newyi) * 10
+  }
+  //console.log(newPosArr)
+  return newPosArr
+}
 // //////////////////////////////////////
 // main code
 // //////////////////////////////////
@@ -260,7 +358,7 @@ document.addEventListener(
       case 'Up': // IE/Edge specific value
       case 'ArrowUp':
         // Do something for "up arrow" key press.
-        moveShape('up')
+        rotateShape()
         break
       case 'Left': // IE/Edge specific value
       case 'ArrowLeft':
