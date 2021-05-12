@@ -15,6 +15,7 @@ for (i = 0; i < masterGameArr.length; i++) {
 }
 let gameActive = false
 let gamePaused = false
+let score = 0
 
 // ///////////////////////////////////
 // Functions
@@ -180,7 +181,41 @@ const moveShape = (dir) => {
     newShape()
   }
 }
-
+// -----------------------------------
+// reset()
+// -----------------------------------
+const resetBoard = () => {
+  if (myInterval) {
+    clearInterval(myInterval)
+  }
+  for (i = 0; i < masterGameArr.length; i++) {
+    masterGameArr[i] = 0
+    document.getElementById(`pos${i}`).className = `grid-square`
+  }
+  document.querySelector('.header h1').innerText = "Let's play"
+  score = 0
+  newShape()
+  gameActive = true
+  myInterval = setInterval(alwaysDown, 1000)
+}
+// -----------------------------------
+// endGame()
+// -----------------------------------
+const endGame = (incomingShapeArr) => {
+  console.log('made it to end game')
+  let incomingPosInMaster = []
+  incomingShapeArr.forEach((pos) => {
+    incomingPosInMaster.push(masterGameArr[pos])
+  })
+  if (incomingPosInMaster.some((pos) => pos === 1)) {
+    clearInterval(myInterval)
+    document.querySelector('.header h1').innerText = 'Game Over'
+    gameActive = false
+    return true
+  } else {
+    return false
+  }
+}
 // -----------------------------------
 // newShape
 // ----------------------------------
@@ -201,9 +236,13 @@ const newShape = () => {
       }
     }
   }
-  currentShapeObj.curPosition = newPosArr
-  currentShapeObj.curShape = starterShape
-  fillSquare(newPosArr)
+  console.log('made it to new shape')
+
+  if (endGame(newPosArr) === false) {
+    currentShapeObj.curPosition = newPosArr
+    currentShapeObj.curShape = starterShape
+    fillSquare(newPosArr)
+  }
 }
 // ---------------------------------
 //  create shape matrix
@@ -251,6 +290,9 @@ const checkRow = () => {
     if (rowCheckCounter === 10) {
       let rowClearedNum = Math.floor(i / 10)
       let rowStartingNum = rowClearedNum * 10
+      score += 1000
+      document.querySelector('.score p').innerText = `${score}`
+
       // rowToClear.forEach((pos) => {
       //   document.getElementById(`pos${pos}`).className = `grid-square`
       // })
@@ -406,7 +448,7 @@ function alwaysDown() {
 setUpPage()
 const shapeMatrix = createShapeMatrix()
 newShape()
-//setTimeout(moveShape('down'), 1000)
+gameActive = true
 let myInterval = setInterval(alwaysDown, 1000)
 console.log('bye')
 
@@ -467,4 +509,7 @@ document.querySelector('#pause-button').onclick = function () {
     document.querySelector('.header h1').innerText = "Let's play"
     myInterval = setInterval(alwaysDown, 1000)
   }
+}
+document.querySelector('#reset-button').onclick = function () {
+  resetBoard()
 }
