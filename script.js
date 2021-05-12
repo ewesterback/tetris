@@ -407,7 +407,7 @@ setUpPage()
 const shapeMatrix = createShapeMatrix()
 newShape()
 //setTimeout(moveShape('down'), 1000)
-setInterval(alwaysDown, 1000)
+let myInterval = setInterval(alwaysDown, 1000)
 console.log('bye')
 
 // /////////////////////////////////
@@ -457,3 +457,14 @@ document.addEventListener(
   },
   true
 )
+document.querySelector('#pause-button').onclick = function () {
+  if (gamePaused === false) {
+    clearInterval(myInterval)
+    gamePaused = true
+    document.querySelector('.header h1').innerText = 'Game paused'
+  } else {
+    gamePaused = false
+    document.querySelector('.header h1').innerText = "Let's play"
+    myInterval = setInterval(alwaysDown, 1000)
+  }
+}
