@@ -101,7 +101,6 @@ const clearSquare = (posArr) => {
 // ------------------------------------
 const goodToMove = (oldArr, newArr, dir) => {
   if (newArr.some((num) => num > 199)) {
-    //console.log('greater than 199')
     return 2
   }
   let posInMaster = []
@@ -109,7 +108,6 @@ const goodToMove = (oldArr, newArr, dir) => {
     posInMaster.push(masterGameArr[pos])
   })
   if (posInMaster.some((pos) => pos === 1)) {
-    //console.log('something in way')
     if (dir === 'down') {
       return 2
     }
@@ -120,7 +118,6 @@ const goodToMove = (oldArr, newArr, dir) => {
     let newRow = newArr.map((pos) => Math.floor(pos / 10))
     for (let i = 0; i < currentRow.length; i++) {
       if (currentRow[i] !== newRow[i]) {
-        //console.log('at side edge')
         return 0
       }
     }
@@ -135,15 +132,8 @@ const findNewPos = (oldPosArr, dir) => {
   let newPosArr = []
   switch (dir) {
     case 'down':
-      //console.log('down')
       newPosArr = oldPosArr.map((pos) => {
         return pos + 10
-      })
-      break
-    //make sure to delete this case for final
-    case 'up':
-      newPosArr = oldPosArr.map((pos) => {
-        return pos - 10
       })
       break
     case 'left':
@@ -185,9 +175,7 @@ const moveShape = (dir) => {
 // reset()
 // -----------------------------------
 const resetBoard = () => {
-  if (myInterval) {
-    clearInterval(myInterval)
-  }
+  startStopInterval('pause')
   for (i = 0; i < masterGameArr.length; i++) {
     masterGameArr[i] = 0
     document.getElementById(`pos${i}`).className = `grid-square`
@@ -196,20 +184,20 @@ const resetBoard = () => {
   score = 0
   newShape()
   gameActive = true
-  myInterval = setInterval(alwaysDown, 1000)
-  console.log(`in reset ${myInterval}`)
+  gamePaused = false
+  document.querySelector('#pause-button').innerText = 'pause'
+  startStopInterval('start')
 }
 // -----------------------------------
 // endGame()
 // -----------------------------------
 const endGame = (incomingShapeArr) => {
-  //console.log('made it to end game')
   let incomingPosInMaster = []
   incomingShapeArr.forEach((pos) => {
     incomingPosInMaster.push(masterGameArr[pos])
   })
   if (incomingPosInMaster.some((pos) => pos === 1)) {
-    clearInterval(myInterval)
+    startStopInterval('pause')
     document.querySelector('.header h1').innerText = 'Game Over'
     gameActive = false
     return true
@@ -237,7 +225,6 @@ const newShape = () => {
       }
     }
   }
-  //console.log('made it to new shape')
 
   if (endGame(newPosArr) === false) {
     currentShapeObj.curPosition = newPosArr
@@ -293,10 +280,6 @@ const checkRow = () => {
       let rowStartingNum = rowClearedNum * 10
       score += 1000
       document.querySelector('.score p').innerText = `${score}`
-
-      // rowToClear.forEach((pos) => {
-      //   document.getElementById(`pos${pos}`).className = `grid-square`
-      // })
       masterGameArr.splice(rowStartingNum, 10)
       masterGameArr.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
       for (let i = 0; i < masterGameArr.length; i++) {
@@ -315,7 +298,6 @@ const checkRow = () => {
 const rotateShape = () => {
   let curShape = currentShapeObj.curShape
   let newShape = []
-  //let row = 0
   for (let j = curShape[0].length - 1; j >= 0; j--) {
     let row = []
     for (let i = 0; i < curShape.length; i++) {
@@ -325,7 +307,6 @@ const rotateShape = () => {
   }
   let newPosArr = centerMass(currentShapeObj.curPosition, newShape)
   if (newPosArr.length > 3) {
-    //console.log('made it')
     clearSquare(currentShapeObj.curPosition)
     fillSquare(newPosArr)
     currentShapeObj.curPosition = newPosArr
@@ -408,7 +389,6 @@ const centerMass = (oldPosArr, newShape) => {
     posInMaster.push(masterGameArr[pos])
   })
   if (posInMaster.some((pos) => pos === 1)) {
-    //console.log('something in way')
     return []
   }
 
@@ -442,6 +422,13 @@ function alwaysDown() {
     newShape()
   }
 }
+const startStopInterval = (action) => {
+  if (action === 'pause') {
+    clearInterval(myInterval)
+  } else if (action === 'start') {
+    myInterval = setInterval(alwaysDown, 1000)
+  }
+}
 
 // //////////////////////////////////////
 // main code
@@ -451,7 +438,6 @@ const shapeMatrix = createShapeMatrix()
 newShape()
 gameActive = true
 let myInterval = setInterval(alwaysDown, 1000)
-console.log('bye')
 
 // /////////////////////////////////
 // Event Listeners
@@ -502,15 +488,17 @@ document.addEventListener(
 )
 document.querySelector('#pause-button').onclick = function () {
   if (gamePaused === false) {
-    console.log(myInterval)
-    clearInterval(myInterval)
+    //clearInterval(myInterval)
+    startStopInterval('pause')
     gamePaused = true
     document.querySelector('.header h1').innerText = 'Game paused'
+    document.querySelector('#pause-button').innerText = 'play'
   } else {
-    console.log(myInterval)
     gamePaused = false
     document.querySelector('.header h1').innerText = "Let's play"
-    myInterval = setInterval(alwaysDown, 1000)
+    document.querySelector('#pause-button').innerText = 'pause'
+    //myInterval = setInterval(alwaysDown, 1000)
+    startStopInterval('start')
   }
 }
 document.querySelector('#reset-button').onclick = function () {
