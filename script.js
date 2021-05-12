@@ -101,7 +101,7 @@ const clearSquare = (posArr) => {
 // ------------------------------------
 const goodToMove = (oldArr, newArr, dir) => {
   if (newArr.some((num) => num > 199)) {
-    console.log('greater than 199')
+    //console.log('greater than 199')
     return 2
   }
   let posInMaster = []
@@ -109,7 +109,7 @@ const goodToMove = (oldArr, newArr, dir) => {
     posInMaster.push(masterGameArr[pos])
   })
   if (posInMaster.some((pos) => pos === 1)) {
-    console.log('something in way')
+    //console.log('something in way')
     if (dir === 'down') {
       return 2
     }
@@ -120,7 +120,7 @@ const goodToMove = (oldArr, newArr, dir) => {
     let newRow = newArr.map((pos) => Math.floor(pos / 10))
     for (let i = 0; i < currentRow.length; i++) {
       if (currentRow[i] !== newRow[i]) {
-        console.log('at side edge')
+        //console.log('at side edge')
         return 0
       }
     }
@@ -135,7 +135,7 @@ const findNewPos = (oldPosArr, dir) => {
   let newPosArr = []
   switch (dir) {
     case 'down':
-      console.log('down')
+      //console.log('down')
       newPosArr = oldPosArr.map((pos) => {
         return pos + 10
       })
@@ -197,12 +197,13 @@ const resetBoard = () => {
   newShape()
   gameActive = true
   myInterval = setInterval(alwaysDown, 1000)
+  console.log(`in reset ${myInterval}`)
 }
 // -----------------------------------
 // endGame()
 // -----------------------------------
 const endGame = (incomingShapeArr) => {
-  console.log('made it to end game')
+  //console.log('made it to end game')
   let incomingPosInMaster = []
   incomingShapeArr.forEach((pos) => {
     incomingPosInMaster.push(masterGameArr[pos])
@@ -236,7 +237,7 @@ const newShape = () => {
       }
     }
   }
-  console.log('made it to new shape')
+  //console.log('made it to new shape')
 
   if (endGame(newPosArr) === false) {
     currentShapeObj.curPosition = newPosArr
@@ -324,7 +325,7 @@ const rotateShape = () => {
   }
   let newPosArr = centerMass(currentShapeObj.curPosition, newShape)
   if (newPosArr.length > 3) {
-    console.log('made it')
+    //console.log('made it')
     clearSquare(currentShapeObj.curPosition)
     fillSquare(newPosArr)
     currentShapeObj.curPosition = newPosArr
@@ -407,7 +408,7 @@ const centerMass = (oldPosArr, newShape) => {
     posInMaster.push(masterGameArr[pos])
   })
   if (posInMaster.some((pos) => pos === 1)) {
-    console.log('something in way')
+    //console.log('something in way')
     return []
   }
 
@@ -501,10 +502,12 @@ document.addEventListener(
 )
 document.querySelector('#pause-button').onclick = function () {
   if (gamePaused === false) {
+    console.log(myInterval)
     clearInterval(myInterval)
     gamePaused = true
     document.querySelector('.header h1').innerText = 'Game paused'
   } else {
+    console.log(myInterval)
     gamePaused = false
     document.querySelector('.header h1').innerText = "Let's play"
     myInterval = setInterval(alwaysDown, 1000)
