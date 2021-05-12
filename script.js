@@ -13,6 +13,8 @@ const masterGameArr = new Array(200)
 for (i = 0; i < masterGameArr.length; i++) {
   masterGameArr[i] = 0
 }
+let gameActive = false
+let gamePaused = false
 
 // ///////////////////////////////////
 // Functions
@@ -132,6 +134,7 @@ const findNewPos = (oldPosArr, dir) => {
   let newPosArr = []
   switch (dir) {
     case 'down':
+      console.log('down')
       newPosArr = oldPosArr.map((pos) => {
         return pos + 10
       })
@@ -246,7 +249,6 @@ const checkRow = () => {
       rowCheckCounter++
     }
     if (rowCheckCounter === 10) {
-      alert('row cleared')
       let rowClearedNum = Math.floor(i / 10)
       let rowStartingNum = rowClearedNum * 10
       // rowToClear.forEach((pos) => {
@@ -278,18 +280,6 @@ const rotateShape = () => {
     }
     newShape.push(row)
   }
-  // let startNum = 54 //54 since it's in the middle.  This will be centered in centerMass
-  // let newStartPosArr = []
-  // let newPos = 0
-  // for (let i = 0; i < newShape.length; i++) {
-  //   for (let j = 0; j < newShape[i].length; j++) {
-  //     if (newShape[i][j] === 1) {
-  //       newPos = newShape[i][j] + j + startNum + i * 10
-  //       newStartPosArr.push(newPos)
-  //     }
-  //   }
-  // }
-  //console.log(newPosArr)
   let newPosArr = centerMass(currentShapeObj.curPosition, newShape)
   if (newPosArr.length > 3) {
     console.log('made it')
@@ -314,7 +304,7 @@ const centerMass = (oldPosArr, newShape) => {
       }
     }
   }
-  //let's change to x and y
+  //change position # to x and y coords
   let oldPosArrX = oldPosArr.map((pos) => {
     return pos % 10
   })
@@ -353,7 +343,7 @@ const centerMass = (oldPosArr, newShape) => {
     newPosArrX[i] = newPosArrX[i] + oldxi - newxi
     newPosArrY[i] = newPosArrY[i] + oldyi - newyi
   }
-  //accounts for edges
+  //accounts for edges and nudges to one side or the other
   while (newPosArrX.some((pos) => pos < 0)) {
     newPosArrX = newPosArrX.map((val) => val + 1)
   }
@@ -367,6 +357,8 @@ const centerMass = (oldPosArr, newShape) => {
     newPosArrY = newPosArrY.map((val) => val - 1)
   }
   // account for elements in the way
+  // If another square is in the way,
+  // won't rotate.  For future, should build in some nudging
   let posInMaster = []
   let newZippedArr = zipper(newPosArrX, newPosArrY)
   newZippedArr.forEach((pos) => {
@@ -377,7 +369,6 @@ const centerMass = (oldPosArr, newShape) => {
     return []
   }
 
-  //console.log(newPosArr)
   return newZippedArr
 }
 // --------------------------
@@ -390,12 +381,33 @@ const zipper = (xArr, yArr) => {
   }
   return newZipped
 }
+// --------------------------
+// alwaysDown
+// -------------------------
+function alwaysDown() {
+  let oldPosArr = currentShapeObj.curPosition
+  let newPosArr = findNewPos(oldPosArr, 'down')
+  let canMove = goodToMove(oldPosArr, newPosArr, 'down')
+  if (canMove === 1) {
+    clearSquare(oldPosArr)
+    fillSquare(newPosArr)
+    currentShapeObj.curPosition = newPosArr
+  } else if (canMove === 2) {
+    oldPosArr.forEach((pos) => {
+      masterGameArr[pos] = 1
+    })
+    newShape()
+  }
+}
+
 // //////////////////////////////////////
 // main code
 // //////////////////////////////////
 setUpPage()
 const shapeMatrix = createShapeMatrix()
 newShape()
+//setTimeout(moveShape('down'), 1000)
+setInterval(alwaysDown, 1000)
 console.log('bye')
 
 // /////////////////////////////////
