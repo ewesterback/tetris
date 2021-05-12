@@ -278,58 +278,117 @@ const rotateShape = () => {
     }
     newShape.push(row)
   }
-  let startNum = currentShapeObj.curPosition[0]
-  let newPosArr = []
+  // let startNum = 54 //54 since it's in the middle.  This will be centered in centerMass
+  // let newStartPosArr = []
+  // let newPos = 0
+  // for (let i = 0; i < newShape.length; i++) {
+  //   for (let j = 0; j < newShape[i].length; j++) {
+  //     if (newShape[i][j] === 1) {
+  //       newPos = newShape[i][j] + j + startNum + i * 10
+  //       newStartPosArr.push(newPos)
+  //     }
+  //   }
+  // }
+  //console.log(newPosArr)
+  let newPosArr = centerMass(currentShapeObj.curPosition, newShape)
+  if (newPosArr.length > 3) {
+    console.log('made it')
+    clearSquare(currentShapeObj.curPosition)
+    fillSquare(newPosArr)
+    currentShapeObj.curPosition = newPosArr
+    currentShapeObj.curShape = newShape
+  }
+}
+// ----------------------
+// centerMass
+// -------------------
+const centerMass = (oldPosArr, newShape) => {
+  let startNum = 54 //54 since it's in the middle.  This will be centered in centerMass
+  let newStartPosArr = []
   let newPos = 0
   for (let i = 0; i < newShape.length; i++) {
     for (let j = 0; j < newShape[i].length; j++) {
       if (newShape[i][j] === 1) {
         newPos = newShape[i][j] + j + startNum + i * 10
-        newPosArr.push(newPos)
+        newStartPosArr.push(newPos)
       }
     }
   }
-  //console.log(newPosArr)
-  centerMass(currentShapeObj.curPosition, newPosArr)
-  //console.log(newPosArr)
-  clearSquare(currentShapeObj.curPosition)
-  fillSquare(newPosArr)
-  currentShapeObj.curPosition = newPosArr
-  currentShapeObj.curShape = newShape
-}
-// ----------------------
-// centerMass
-// -------------------
-const centerMass = (oldPosArr, newPosArr) => {
+  //let's change to x and y
+  let oldPosArrX = oldPosArr.map((pos) => {
+    return pos % 10
+  })
+  let oldPosArrY = oldPosArr.map((pos) => {
+    return Math.floor(pos / 10)
+  })
+  let newPosArrX = newStartPosArr.map((pos) => {
+    return pos % 10
+  })
+  let newPosArrY = newStartPosArr.map((pos) => {
+    return Math.floor(pos / 10)
+  })
+  //find the center of mass for old and new arrays
   let oldxi = Math.floor(
-    oldPosArr.reduce((acc, pos) => {
-      return acc + (pos % 10)
+    oldPosArrX.reduce((acc, pos) => {
+      return acc + pos
     }, 0) / 4
   )
   let oldyi = Math.floor(
-    oldPosArr.reduce((acc, pos) => {
-      return acc + Math.floor(pos / 10)
+    oldPosArrY.reduce((acc, pos) => {
+      return acc + pos
     }, 0) / 4
   )
   let newxi = Math.floor(
-    newPosArr.reduce((acc, pos) => {
-      return acc + (pos % 10)
+    newPosArrX.reduce((acc, pos) => {
+      return acc + pos
     }, 0) / 4
   )
   let newyi = Math.floor(
-    newPosArr.reduce((acc, pos) => {
-      return acc + Math.floor(pos / 10)
+    newPosArrY.reduce((acc, pos) => {
+      return acc + pos
     }, 0) / 4
   )
-  // console.log(oldPosArr)
-  // console.log(newPosArr)
-  // console.log(`${oldxi}, ${oldyi}`)
-  // console.log(`${newxi}, ${newyi}`)
-  for (let i = 0; i < newPosArr.length; i++) {
-    newPosArr[i] = newPosArr[i] + oldxi - newxi + (oldyi - newyi) * 10
+  //match the center of mass of the newPos with the old one
+  for (let i = 0; i < newPosArrX.length; i++) {
+    newPosArrX[i] = newPosArrX[i] + oldxi - newxi
+    newPosArrY[i] = newPosArrY[i] + oldyi - newyi
   }
+  //accounts for edges
+  while (newPosArrX.some((pos) => pos < 0)) {
+    newPosArrX = newPosArrX.map((val) => val + 1)
+  }
+  while (newPosArrX.some((pos) => pos > 9)) {
+    newPosArrX = newPosArrX.map((val) => val - 1)
+  }
+  while (newPosArrY.some((pos) => pos < 0)) {
+    newPosArrY = newPosArrY.map((val) => val + 1)
+  }
+  while (newPosArrY.some((pos) => pos > 19)) {
+    newPosArrY = newPosArrY.map((val) => val - 1)
+  }
+  // account for elements in the way
+  let posInMaster = []
+  let newZippedArr = zipper(newPosArrX, newPosArrY)
+  newZippedArr.forEach((pos) => {
+    posInMaster.push(masterGameArr[pos])
+  })
+  if (posInMaster.some((pos) => pos === 1)) {
+    console.log('something in way')
+    return []
+  }
+
   //console.log(newPosArr)
-  return newPosArr
+  return newZippedArr
+}
+// --------------------------
+// zipper
+// -------------------------
+const zipper = (xArr, yArr) => {
+  newZipped = []
+  for (i = 0; i < xArr.length; i++) {
+    newZipped.push(parseInt(`${yArr[i]}${xArr[i]}`))
+  }
+  return newZipped
 }
 // //////////////////////////////////////
 // main code
