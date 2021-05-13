@@ -1,0 +1,35 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  background-color: #7e8e65;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 5% 1fr 1fr 5% 40%;
+  grid-template-rows: 1fr 5% 1fr 1fr 5% 1fr;
+  gap: 0px 0px;
+  background-image: url('launchpageBackground.png');
+  background-position: left;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100vh;
+}
+.overlay {
+  grid-area: 2 / 2 / 6 / 6;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+.header {
+  grid-area: 3 / 3 / 4 / 5;
+}
+.info {
+  grid-area: 4 / 3 / 5 / 4;
+}
+.button {
+  grid-area: 4 / 4 / 5 / 5;
+}
+
+.title {
+  padding: 1rem;
+}

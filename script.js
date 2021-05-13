@@ -14,8 +14,9 @@ for (i = 0; i < masterGameArr.length; i++) {
   masterGameArr[i] = 0
 }
 let gameActive = false
-let gamePaused = false
+let gamePaused = true
 let score = 0
+let myInterval
 
 // ///////////////////////////////////
 // Functions
@@ -437,7 +438,7 @@ setUpPage()
 const shapeMatrix = createShapeMatrix()
 newShape()
 gameActive = true
-let myInterval = setInterval(alwaysDown, 1000)
+//let myInterval = setInterval(alwaysDown, 1000)
 
 // /////////////////////////////////
 // Event Listeners
@@ -453,22 +454,30 @@ document.addEventListener(
       case 'Down': // IE/Edge specific value
       case 'ArrowDown':
         // Do something for "down arrow" key press.
-        moveShape('down')
+        if (gamePaused === false) {
+          moveShape('down')
+        }
         break
       case 'Up': // IE/Edge specific value
       case 'ArrowUp':
         // Do something for "up arrow" key press.
-        rotateShape()
+        if (gamePaused === false) {
+          rotateShape()
+        }
         break
       case 'Left': // IE/Edge specific value
       case 'ArrowLeft':
         // Do something for "left arrow" key press.
-        moveShape('left')
+        if (gamePaused === false) {
+          moveShape('left')
+        }
         break
       case 'Right': // IE/Edge specific value
       case 'ArrowRight':
         // Do something for "right arrow" key press.
-        moveShape('right')
+        if (gamePaused === false) {
+          moveShape('right')
+        }
         break
       case 'Enter':
         // Do something for "enter" or "return" key press.
