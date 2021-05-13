@@ -35,29 +35,29 @@ const range = (begin, end, step) =>
 // I/O: none
 // -------------------------------
 const setUpPage = () => {
-  class ElementFactory {
-    createElement(type, props) {
-      let el = document.createElement(type)
-      for (let key in props) {
-        el[key] = props[key]
-      }
-      return el
-    }
-  }
+  // class ElementFactory {
+  //   createElement(type, props) {
+  //     let el = document.createElement(type)
+  //     for (let key in props) {
+  //       el[key] = props[key]
+  //     }
+  //     return el
+  //   }
+  // }
 
-  class TetrisSquare extends ElementFactory {
-    constructor(numPos) {
-      super()
-      this.numPos = numPos
-    }
-    createGridSquare() {
-      return this.createElement('div', {
-        className: 'grid-square',
-        id: `pos${this.numPos}`,
-        innerHTML: `<p>${this.numPos}</p>`
-      })
-    }
-  }
+  // class TetrisSquare extends ElementFactory {
+  //   constructor(numPos) {
+  //     super()
+  //     this.numPos = numPos
+  //   }
+  //   createGridSquare() {
+  //     return this.createElement('div', {
+  //       className: 'grid-square',
+  //       id: `pos${this.numPos}`,
+  //       innerHTML: `<p>${this.numPos}</p>`
+  //     })
+  //   }
+  // }
 
   const gridArray = range(0, 199, 1)
 
@@ -277,19 +277,47 @@ const checkRow = () => {
       rowCheckCounter++
     }
     if (rowCheckCounter === 10) {
+      // identify row that was cleared
       let rowClearedNum = Math.floor(i / 10)
       let rowStartingNum = rowClearedNum * 10
+      // increase score
       score += 1000
       document.querySelector('.score p').innerText = `${score}`
+      // update the master game array to remove row
       masterGameArr.splice(rowStartingNum, 10)
       masterGameArr.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-      for (let i = 0; i < masterGameArr.length; i++) {
-        if (masterGameArr[i] === 1) {
-          document.getElementById(`pos${i}`).className = `grid-square filled`
-        } else {
-          document.getElementById(`pos${i}`).className = `grid-square`
-        }
+      // -----update html-----
+      // remove row
+      for (let i = rowStartingNum; i < rowStartingNum + 10; i++) {
+        document.getElementById(`pos${i}`).remove()
       }
+      // shift ids
+      let newIDNum = rowStartingNum + 9
+      let oldClass
+      for (let i = rowStartingNum - 1; i >= 0; i--) {
+        let elToChange = document.getElementById(`pos${i}`)
+        //oldClass = elToChange.className
+        elToChange.id = `pos${newIDNum}`
+        console.log(`updated element ID for ${i} to ${newIDNum}`)
+        //document.getElementById(`pos${newID}`).className
+        newIDNum--
+      }
+      for (let i = 9; i >= 0; i--) {
+        let mySquare = new TetrisSquare(i).createGridSquare()
+        gameGrid.insertBefore(mySquare, gameGrid.childNodes[0]) //need to change this
+        // gameGrid.insertAdjacentHTML(
+        //   'afterbegin',
+        //   `<div class="grid-square" id="pos${i}><p>x</p></div>`
+        // )
+        // console.log(`<div class="grid-square" id="pos${i}"><p>x</p></div>`)
+      }
+      // for (let i = 0; i < masterGameArr.length; i++) {
+      //   if (masterGameArr[i] === 1) {
+      //     document.getElementById(`pos${i}`).className = `grid-square filled`
+      //   } else {
+      //     document.getElementById(`pos${i}`).className = `grid-square`
+      //   }
+      // }
     }
   }
 }
@@ -434,6 +462,29 @@ const startStopInterval = (action) => {
 // //////////////////////////////////////
 // main code
 // //////////////////////////////////
+class ElementFactory {
+  createElement(type, props) {
+    let el = document.createElement(type)
+    for (let key in props) {
+      el[key] = props[key]
+    }
+    return el
+  }
+}
+
+class TetrisSquare extends ElementFactory {
+  constructor(numPos) {
+    super()
+    this.numPos = numPos
+  }
+  createGridSquare() {
+    return this.createElement('div', {
+      className: 'grid-square',
+      id: `pos${this.numPos}`,
+      innerHTML: `<p>${this.numPos}</p>`
+    })
+  }
+}
 setUpPage()
 const shapeMatrix = createShapeMatrix()
 newShape()
