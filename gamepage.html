@@ -4,34 +4,45 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css" />
   <title>Tetris</title>
 </head>
 <body>
-  <header>
-    <a href = 'index.html'>Back to home page</a>
-  </header>
   <content>
-    <div class = "gameboard">
-      <div class="board-container">
-
-      </div>
-    </div>
-    <div class="header">
-      <h1>Let the games begin</h1>
-    </div>
-    <div class="upnext">
-      <p>Upnext</p>
-    </div>
+    <div class="overlay"></div>
     <div class="how-to-play">
-      <p>how to play</p>
+      <div class="instructions">
+        <p>Use left and right arrows to move side to side</p>
+        <p>Use up arrow to rotate shape</p>
+        <p>Use down arrow to fast drop</p>
+      </div>
+      
     </div>
     <div class="score">
       <p>0</p>
     </div>
+    <div class="upnext">
+      <p>Upcoming shapes</p>
+    </div>
     <div class="game-controls">
-      <button id="pause-button">play</button>
-      <button id="reset-button">start again</button>
+        <button id="pause-button">play</button>
+        <button id="reset-button">start again</button>
+    </div>
+    <div class="gameboard">
+
+    </div>
+    <div class="header">
+      <h1>Press play to start</h1>
+    </div>
+    <div class="nav-area">
+      <a href = 'index.html'>Back to home page</a>
+    </div>
+    <div class = "gameboard">
+    <div class="board-container">
+
+      </div>
     </div>
   </content>
   <script src="./script.js"></script>

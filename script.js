@@ -7,7 +7,8 @@ const gameGrid = document.querySelector('.board-container')
 const BODY = document.querySelector('body')
 const currentShapeObj = {
   curPosition: [],
-  curShape: []
+  curShape: [],
+  curShapeName: ''
 }
 const masterGameArr = new Array(200)
 for (i = 0; i < masterGameArr.length; i++) {
@@ -35,30 +36,6 @@ const range = (begin, end, step) =>
 // I/O: none
 // -------------------------------
 const setUpPage = () => {
-  // class ElementFactory {
-  //   createElement(type, props) {
-  //     let el = document.createElement(type)
-  //     for (let key in props) {
-  //       el[key] = props[key]
-  //     }
-  //     return el
-  //   }
-  // }
-
-  // class TetrisSquare extends ElementFactory {
-  //   constructor(numPos) {
-  //     super()
-  //     this.numPos = numPos
-  //   }
-  //   createGridSquare() {
-  //     return this.createElement('div', {
-  //       className: 'grid-square',
-  //       id: `pos${this.numPos}`,
-  //       innerHTML: `<p>${this.numPos}</p>`
-  //     })
-  //   }
-  // }
-
   const gridArray = range(0, 199, 1)
 
   gridArray.forEach((square) => {
@@ -163,7 +140,7 @@ const moveShape = (dir) => {
   let canMove = goodToMove(oldPosArr, newPosArr, dir)
   if (canMove === 1) {
     clearSquare(oldPosArr)
-    fillSquare(newPosArr)
+    fillSquare(newPosArr, currentShapeObj.curShapeName)
     currentShapeObj.curPosition = newPosArr
   } else if (canMove === 2) {
     oldPosArr.forEach((pos) => {
@@ -213,6 +190,7 @@ const newShape = () => {
   checkRow()
   let randomNum = Math.floor(Math.random() * 7)
   let starterShape = shapeMatrix[randomNum]
+  let starterShapeName = shapeNameMatrix[randomNum]
   let newPosArr = []
   for (let i = 0; i < starterShape[0].length; i++) {
     if (starterShape[0][i] === 1) {
@@ -230,7 +208,8 @@ const newShape = () => {
   if (endGame(newPosArr) === false) {
     currentShapeObj.curPosition = newPosArr
     currentShapeObj.curShape = starterShape
-    fillSquare(newPosArr)
+    currentShapeObj.curShapeName = starterShapeName
+    fillSquare(newPosArr, starterShapeName)
   }
 }
 // ---------------------------------
@@ -293,31 +272,16 @@ const checkRow = () => {
       }
       // shift ids
       let newIDNum = rowStartingNum + 9
-      let oldClass
       for (let i = rowStartingNum - 1; i >= 0; i--) {
         let elToChange = document.getElementById(`pos${i}`)
-        //oldClass = elToChange.className
         elToChange.id = `pos${newIDNum}`
-        console.log(`updated element ID for ${i} to ${newIDNum}`)
-        //document.getElementById(`pos${newID}`).className
         newIDNum--
       }
+      //create new row on top
       for (let i = 9; i >= 0; i--) {
         let mySquare = new TetrisSquare(i).createGridSquare()
-        gameGrid.insertBefore(mySquare, gameGrid.childNodes[0]) //need to change this
-        // gameGrid.insertAdjacentHTML(
-        //   'afterbegin',
-        //   `<div class="grid-square" id="pos${i}><p>x</p></div>`
-        // )
-        // console.log(`<div class="grid-square" id="pos${i}"><p>x</p></div>`)
+        gameGrid.insertBefore(mySquare, gameGrid.childNodes[0])
       }
-      // for (let i = 0; i < masterGameArr.length; i++) {
-      //   if (masterGameArr[i] === 1) {
-      //     document.getElementById(`pos${i}`).className = `grid-square filled`
-      //   } else {
-      //     document.getElementById(`pos${i}`).className = `grid-square`
-      //   }
-      // }
     }
   }
 }
@@ -337,7 +301,7 @@ const rotateShape = () => {
   let newPosArr = centerMass(currentShapeObj.curPosition, newShape)
   if (newPosArr.length > 3) {
     clearSquare(currentShapeObj.curPosition)
-    fillSquare(newPosArr)
+    fillSquare(newPosArr, currentShapeObj.curShapeName)
     currentShapeObj.curPosition = newPosArr
     currentShapeObj.curShape = newShape
   }
@@ -442,7 +406,7 @@ function alwaysDown() {
   let canMove = goodToMove(oldPosArr, newPosArr, 'down')
   if (canMove === 1) {
     clearSquare(oldPosArr)
-    fillSquare(newPosArr)
+    fillSquare(newPosArr, currentShapeObj.curShapeName)
     currentShapeObj.curPosition = newPosArr
   } else if (canMove === 2) {
     oldPosArr.forEach((pos) => {
@@ -481,12 +445,21 @@ class TetrisSquare extends ElementFactory {
     return this.createElement('div', {
       className: 'grid-square',
       id: `pos${this.numPos}`,
-      innerHTML: `<p>${this.numPos}</p>`
+      innerHTML: `<p></p>`
     })
   }
 }
 setUpPage()
 const shapeMatrix = createShapeMatrix()
+const shapeNameMatrix = [
+  'square',
+  'rightL',
+  'leftL',
+  'tshape',
+  'zig',
+  'zag',
+  'pole'
+]
 newShape()
 gameActive = true
 //let myInterval = setInterval(alwaysDown, 1000)
