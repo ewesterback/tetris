@@ -5,6 +5,7 @@ console.log('hi')
 
 const gameGrid = document.querySelector('.board-container')
 const BODY = document.querySelector('body')
+const upnextGrid = document.querySelector('.upnext-grid')
 const currentShapeObj = {
   curPosition: [],
   curShape: [],
@@ -14,10 +15,23 @@ const masterGameArr = new Array(200)
 for (i = 0; i < masterGameArr.length; i++) {
   masterGameArr[i] = 0
 }
-let gameActive = false
+let gameActive = true
 let gamePaused = true
 let score = 0
 let myInterval
+let upNextArray = []
+const nextShapeObj1 = {
+  shape: [],
+  shapeName: ''
+}
+const nextShapeObj2 = {
+  shape: [],
+  shapeName: ''
+}
+const nextShapeObj3 = {
+  shape: [],
+  shapeName: ''
+}
 
 // ///////////////////////////////////
 // Functions
@@ -37,11 +51,20 @@ const range = (begin, end, step) =>
 // -------------------------------
 const setUpPage = () => {
   const gridArray = range(0, 199, 1)
-
+  let className = 'grid-square'
   gridArray.forEach((square) => {
-    let mySquare = new TetrisSquare(square).createGridSquare()
+    let id = `pos${square}`
+    let mySquare = new TetrisSquare(className, id).createGridSquare()
     gameGrid.appendChild(mySquare)
   })
+  let nextClassName = 'upnext-square'
+  for (let j = 0; j < 8; j++) {
+    for (let i = 0; i < 4; i++) {
+      let nextId = `next${j}${i}`
+      let mySquare = new TetrisSquare(nextClassName, nextId).createGridSquare()
+      upnextGrid.appendChild(mySquare)
+    }
+  }
 }
 // ----------------------------------
 // fillSquare
@@ -183,14 +206,97 @@ const endGame = (incomingShapeArr) => {
     return false
   }
 }
+// ------------------------------------
+//
+// -------------------------------------
+const createUpNext = () => {
+  let randomNum
+  // if (upNextArray.length < 1){
+  //   randomNum = Math.floor(Math.random() * 7)
+  //   currentShapeObj.curShape = shapeMatrix[randomNum]
+  //   currentShapeObj.curShapeName = shapeNameMatrix[randomNum]
+  //   randomNum = Math.floor(Math.random() * 7)
+  //   nextShapeObj1.shape = shapeMatrix[randomNum]
+  //   nextShapeObj1.shapeName = shapeNameMatrix[randomNum]
+  //   randomNum = Math.floor(Math.random() * 7)
+  //   nextShapeObj2.shape = shapeMatrix[randomNum]
+  //   nextShapeObj2.shapeName = shapeNameMatrix[randomNum]
+  //   randomNum = Math.floor(Math.random() * 7)
+  //   nextShapeObj3.shape = shapeMatrix[randomNum]
+  //   nextShapeObj3.shapeName = shapeNameMatrix[randomNum]
+  // } else {
+  //   currentShapeObj.curShape = nextShapeObj1.shape
+  //   currentShapeObj.curShapeName = nextShapeObj1.shapeName
+  //   nextShapeObj1.shape = nextShapeObj2.shape
+  //   nextShapeObj1.shapeName = nextShapeObj2.shapeName
+  //   nextShapeObj2.shape = nextShapeObj3.shape
+  //   nextShapeObj2.shapeName = nextShapeObj3.shapeName
+  //   randomNum = Math.floor(Math.random() * 7)
+  //   nextShapeObj3.shape = shapeMatrix[randomNum]
+  //   nextShapeObj3.shapeName = shapeNameMatrix[randomNum]
+  // }
+  let nextShape
+  let nextShapeName
+  if (upNextArray.length < 3) {
+    for (let i = 1; i <= 3; i++) {
+      randomNum = Math.floor(Math.random() * 7)
+      nextShape = shapeMatrix[randomNum]
+      nextShapeName = shapeNameMatrix[randomNum]
+      upNextArray.push([nextShape, nextShapeName])
+    }
+    randomNum = Math.floor(Math.random() * 7)
+    currentShapeObj.curShape = shapeMatrix[randomNum]
+    currentShapeObj.curShapeName = shapeNameMatrix[randomNum]
+  } else {
+    let newShapeArry = upNextArray.shift()
+    currentShapeObj.curShape = newShapeArry[0]
+    currentShapeObj.curShapeName = newShapeArry[1]
+    randomNum = Math.floor(Math.random() * 7)
+    nextShape = shapeMatrix[randomNum]
+    nextShapeName = shapeNameMatrix[randomNum]
+    upNextArray.push([nextShape, nextShapeName])
+  }
+  for (let j = 0; j < 8; j++) {
+    for (let i = 0; i < 4; i++) {
+      let nextId = `next${j}${i}`
+      document.getElementById(nextId).className = `upnext-square`
+    }
+  }
+  let startingRow = 0
+  for (let i = 0; i < upNextArray.length; i++) {
+    let newDisplayShapeArry = upNextArray[i][0]
+    let colorClass = upNextArray[i][1]
+    console.log(`${colorClass} and ${startingRow}`)
+    for (let x = 0; x < newDisplayShapeArry[0].length; x++) {
+      if (newDisplayShapeArry[0][x] === 1) {
+        let newID = `next${startingRow}${x}`
+        document.getElementById(newID).className = `upnext-square ${colorClass}`
+      }
+    }
+    if (newDisplayShapeArry.length > 1) {
+      for (let x = 0; x < newDisplayShapeArry[1].length; x++) {
+        if (newDisplayShapeArry[1][x] === 1) {
+          let newID = `next${startingRow + 1}${x}`
+          document.getElementById(
+            newID
+          ).className = `upnext-square ${colorClass}`
+        }
+      }
+    }
+    startingRow += 3
+  }
+}
 // -----------------------------------
 // newShape
 // ----------------------------------
 const newShape = () => {
+  if (gameActive === false) {
+    return
+  }
   checkRow()
-  let randomNum = Math.floor(Math.random() * 7)
-  let starterShape = shapeMatrix[randomNum]
-  let starterShapeName = shapeNameMatrix[randomNum]
+  createUpNext()
+  let starterShape = currentShapeObj.curShape
+  let starterShapeName = currentShapeObj.curShapeName
   let newPosArr = []
   for (let i = 0; i < starterShape[0].length; i++) {
     if (starterShape[0][i] === 1) {
@@ -207,8 +313,6 @@ const newShape = () => {
 
   if (endGame(newPosArr) === false) {
     currentShapeObj.curPosition = newPosArr
-    currentShapeObj.curShape = starterShape
-    currentShapeObj.curShapeName = starterShapeName
     fillSquare(newPosArr, starterShapeName)
   }
 }
@@ -278,8 +382,10 @@ const checkRow = () => {
         newIDNum--
       }
       //create new row on top
+      let className = 'grid-square'
       for (let i = 9; i >= 0; i--) {
-        let mySquare = new TetrisSquare(i).createGridSquare()
+        let id = `pos${i}`
+        let mySquare = new TetrisSquare(className, id).createGridSquare()
         gameGrid.insertBefore(mySquare, gameGrid.childNodes[0])
       }
     }
@@ -291,6 +397,8 @@ const checkRow = () => {
 const rotateShape = () => {
   let curShape = currentShapeObj.curShape
   let newShape = []
+  //rotates shape by flipping columns and rows
+  // still in 1s and 0s
   for (let j = curShape[0].length - 1; j >= 0; j--) {
     let row = []
     for (let i = 0; i < curShape.length; i++) {
@@ -298,6 +406,7 @@ const rotateShape = () => {
     }
     newShape.push(row)
   }
+  // center mass takes 1s and 0s and transisitons it to a positional array
   let newPosArr = centerMass(currentShapeObj.curPosition, newShape)
   if (newPosArr.length > 3) {
     clearSquare(currentShapeObj.curPosition)
@@ -313,6 +422,7 @@ const centerMass = (oldPosArr, newShape) => {
   let startNum = 54 //54 since it's in the middle.  This will be centered in centerMass
   let newStartPosArr = []
   let newPos = 0
+  // takes 1s and 0s and translates to positional array in middle of board
   for (let i = 0; i < newShape.length; i++) {
     for (let j = 0; j < newShape[i].length; j++) {
       if (newShape[i][j] === 1) {
@@ -377,6 +487,7 @@ const centerMass = (oldPosArr, newShape) => {
   // If another square is in the way,
   // won't rotate.  For future, should build in some nudging
   let posInMaster = []
+  // takes x and y arrays and zips into position array
   let newZippedArr = zipper(newPosArrX, newPosArrY)
   newZippedArr.forEach((pos) => {
     posInMaster.push(masterGameArr[pos])
@@ -389,6 +500,7 @@ const centerMass = (oldPosArr, newShape) => {
 }
 // --------------------------
 // zipper
+// takes x and y array and zips them into positional arrays
 // -------------------------
 const zipper = (xArr, yArr) => {
   newZipped = []
@@ -399,6 +511,8 @@ const zipper = (xArr, yArr) => {
 }
 // --------------------------
 // alwaysDown
+// moves shape down
+// referenced in startStopInterval to move shape down every second
 // -------------------------
 function alwaysDown() {
   let oldPosArr = currentShapeObj.curPosition
@@ -415,6 +529,12 @@ function alwaysDown() {
     newShape()
   }
 }
+// ---------------------------
+// startStopInterval
+// takes a string and either stops or starts the interval
+// put in a seperate function to ensure that only one interval
+// is going at a time
+// ---------------------------
 const startStopInterval = (action) => {
   if (action === 'pause') {
     clearInterval(myInterval)
@@ -424,8 +544,10 @@ const startStopInterval = (action) => {
 }
 
 // //////////////////////////////////////
+// //////////////////////////////////////
 // main code
-// //////////////////////////////////
+// ////////////////////////////////////
+// //////////////////////////////////////
 class ElementFactory {
   createElement(type, props) {
     let el = document.createElement(type)
@@ -437,14 +559,15 @@ class ElementFactory {
 }
 
 class TetrisSquare extends ElementFactory {
-  constructor(numPos) {
+  constructor(className, id) {
     super()
-    this.numPos = numPos
+    this.className = className
+    this.id = id
   }
   createGridSquare() {
     return this.createElement('div', {
-      className: 'grid-square',
-      id: `pos${this.numPos}`,
+      className: this.className,
+      id: this.id,
       innerHTML: `<p></p>`
     })
   }
@@ -461,7 +584,6 @@ const shapeNameMatrix = [
   'pole'
 ]
 newShape()
-gameActive = true
 //let myInterval = setInterval(alwaysDown, 1000)
 
 // /////////////////////////////////
@@ -520,13 +642,13 @@ document.addEventListener(
   true
 )
 document.querySelector('#pause-button').onclick = function () {
-  if (gamePaused === false) {
+  if (gamePaused === false && gameActive === true) {
     //clearInterval(myInterval)
     startStopInterval('pause')
     gamePaused = true
     document.querySelector('.header h1').innerText = 'Game paused'
     document.querySelector('#pause-button').innerText = 'play'
-  } else {
+  } else if (gamePaused === true && gameActive === true) {
     gamePaused = false
     document.querySelector('.header h1').innerText = "Let's play"
     document.querySelector('#pause-button').innerText = 'pause'
