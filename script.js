@@ -6,6 +6,13 @@ console.log('hi')
 const gameGrid = document.querySelector('.board-container')
 const BODY = document.querySelector('body')
 const upnextGrid = document.querySelector('.upnext-grid')
+const overlay = document.querySelector('.overlay')
+console.log(overlay)
+const instructionsEl = document.querySelector('.instructions')
+const upnextGroupEl = document.querySelector('.upnext-group')
+console.log(upnextGroupEl)
+//const gridSquareEl = document.querySelectorAll('.grid-square')
+//const upnextSquareEl = document.querySelectorAll('.upnext-square')
 const currentShapeObj = {
   curPosition: [],
   curShape: [],
@@ -17,6 +24,7 @@ for (i = 0; i < masterGameArr.length; i++) {
 }
 let gameActive = true
 let gamePaused = true
+let darkMode = false
 let score = 0
 let myInterval
 let upNextArray = []
@@ -183,6 +191,7 @@ const resetBoard = () => {
   }
   document.querySelector('.header h1').innerText = "Let's play"
   score = 0
+  document.querySelector('.score p').innerText = `${score}`
   newShape()
   gameActive = true
   gamePaused = false
@@ -211,30 +220,6 @@ const endGame = (incomingShapeArr) => {
 // -------------------------------------
 const createUpNext = () => {
   let randomNum
-  // if (upNextArray.length < 1){
-  //   randomNum = Math.floor(Math.random() * 7)
-  //   currentShapeObj.curShape = shapeMatrix[randomNum]
-  //   currentShapeObj.curShapeName = shapeNameMatrix[randomNum]
-  //   randomNum = Math.floor(Math.random() * 7)
-  //   nextShapeObj1.shape = shapeMatrix[randomNum]
-  //   nextShapeObj1.shapeName = shapeNameMatrix[randomNum]
-  //   randomNum = Math.floor(Math.random() * 7)
-  //   nextShapeObj2.shape = shapeMatrix[randomNum]
-  //   nextShapeObj2.shapeName = shapeNameMatrix[randomNum]
-  //   randomNum = Math.floor(Math.random() * 7)
-  //   nextShapeObj3.shape = shapeMatrix[randomNum]
-  //   nextShapeObj3.shapeName = shapeNameMatrix[randomNum]
-  // } else {
-  //   currentShapeObj.curShape = nextShapeObj1.shape
-  //   currentShapeObj.curShapeName = nextShapeObj1.shapeName
-  //   nextShapeObj1.shape = nextShapeObj2.shape
-  //   nextShapeObj1.shapeName = nextShapeObj2.shapeName
-  //   nextShapeObj2.shape = nextShapeObj3.shape
-  //   nextShapeObj2.shapeName = nextShapeObj3.shapeName
-  //   randomNum = Math.floor(Math.random() * 7)
-  //   nextShapeObj3.shape = shapeMatrix[randomNum]
-  //   nextShapeObj3.shapeName = shapeNameMatrix[randomNum]
-  // }
   let nextShape
   let nextShapeName
   if (upNextArray.length < 3) {
@@ -387,6 +372,16 @@ const checkRow = () => {
         let id = `pos${i}`
         let mySquare = new TetrisSquare(className, id).createGridSquare()
         gameGrid.insertBefore(mySquare, gameGrid.childNodes[0])
+      }
+      let updatedGridSquareEl = document.querySelectorAll('.grid-square')
+      if (darkMode === true) {
+        for (let ele = 0; ele < updatedGridSquareEl.length; ele++) {
+          updatedGridSquareEl[ele].style.border = '1px solid #1e3547'
+        }
+      } else {
+        for (let ele = 0; ele < updatedGridSquareEl.length; ele++) {
+          updatedGridSquareEl[ele].style.border = '1px solid #e8f2d8'
+        }
       }
     }
   }
@@ -542,6 +537,43 @@ const startStopInterval = (action) => {
     myInterval = setInterval(alwaysDown, 1000)
   }
 }
+const changeToDarkMode = () => {
+  BODY.style.backgroundImage = "url('darkmodeGPback.png')"
+  console.log(`darkmode ${darkmodeCounter}`)
+  overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)'
+  instructionsEl.style.backgroundColor = 'black'
+  instructionsEl.style.color = 'white'
+  upnextGroupEl.style.backgroundColor = 'black'
+  upnextGroupEl.style.color = 'white'
+  upnextGrid.style.backgroundColor = 'black'
+  for (let ele = 0; ele < upnextSquareEl.length; ele++) {
+    upnextSquareEl[ele].style.border = '1px solid black'
+  }
+  gameGrid.style.backgroundColor = 'black'
+  gameGrid.style.border = '1px solid white'
+  let updatedGridSquareEl = document.querySelectorAll('.grid-square')
+  for (let ele = 0; ele < updatedGridSquareEl.length; ele++) {
+    updatedGridSquareEl[ele].style.border = '1px solid #1e3547'
+  }
+}
+const changeToLightMode = () => {
+  BODY.style.backgroundImage = "url('gamepageBackground.png')"
+  overlay.style.backgroundColor = 'rgba(255, 255, 255, 0.8)'
+  instructionsEl.style.backgroundColor = 'white'
+  instructionsEl.style.color = 'black'
+  upnextGroupEl.style.backgroundColor = 'white'
+  upnextGroupEl.style.color = 'black'
+  upnextGrid.style.backgroundColor = 'white'
+  for (let ele = 0; ele < upnextSquareEl.length; ele++) {
+    upnextSquareEl[ele].style.border = '1px solid white'
+  }
+  gameGrid.style.backgroundColor = 'white'
+  gameGrid.style.border = '1px solid black'
+  let updatedGridSquareEl = document.querySelectorAll('.grid-square')
+  for (let ele = 0; ele < updatedGridSquareEl.length; ele++) {
+    updatedGridSquareEl[ele].style.border = '1px solid #e8f2d8'
+  }
+}
 
 // //////////////////////////////////////
 // //////////////////////////////////////
@@ -573,6 +605,9 @@ class TetrisSquare extends ElementFactory {
   }
 }
 setUpPage()
+const gridSquareEl = document.querySelectorAll('.grid-square')
+const upnextSquareEl = document.querySelectorAll('.upnext-square')
+console.log(gridSquareEl)
 const shapeMatrix = createShapeMatrix()
 const shapeNameMatrix = [
   'square',
@@ -659,3 +694,25 @@ document.querySelector('#pause-button').onclick = function () {
 document.querySelector('#reset-button').onclick = function () {
   resetBoard()
 }
+let darkmodeCounter = 0
+// document.getElementById('darkmode').addEventListener('click', () => {
+//   console.log(darkmodeCounter)
+//   darkmodeCounter++
+//   //console.log('ay')
+// })
+document.getElementById('darkmode').addEventListener('click', () => {
+  if (darkmodeCounter % 2 === 0) {
+    if (darkmodeCounter % 4 === 0) {
+      darkMode = true
+      changeToDarkMode()
+      console.log('in darkmode if')
+    } else {
+      console.log('inlightmode if')
+      darkMode = false
+      changeToLightMode()
+    }
+  }
+  console.log(darkmodeCounter)
+  darkmodeCounter++
+  //console.log('ay')
+})

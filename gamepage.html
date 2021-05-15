@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Amatic+SC&family=Monoton&family=Montserrat&family=Poiret+One&family=Unica+One&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css" />
   <title>Tetris</title>
 </head>
@@ -21,13 +21,17 @@
       
     </div>
     <div class="score">
+      <h3>Score:</h3>
       <p>0</p>
     </div>
     <div class="upnext">
-      <p>Upcoming shapes</p>
-      <div class="upnext-grid">
-
+      <div class="upnext-group">
+        <p>Upcoming shapes</p>
+        <div class="upnext-grid">
+  
+        </div>
       </div>
+      
     </div>
     <div class="game-controls">
         <button id="pause-button">play</button>
@@ -43,6 +47,13 @@
     <div class="board-container">
 
       </div>
+    </div>
+    <div class="settings">
+      <label class="switch" id="darkmode">
+        <input type="checkbox">
+        <span class="slider round"></span>
+      </label>
+
     </div>
   </content>
   <script src="./script.js"></script>

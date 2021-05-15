@@ -16,7 +16,8 @@ content {
   grid-template-columns: 5% 1fr 300px 1fr 5%;
   grid-template-rows: 5% 1fr 300px 300px 1fr 5%;
   gap: 0px 0px;
-  height: 100%;
+  height: 100vh;
+  width: 100vw;
 }
 .overlay {
   grid-area: 2 / 2 / 6 / 5;
@@ -33,6 +34,7 @@ content {
   border: 5px solid #fbce45;
   margin: 5px;
   padding: 5px;
+  font-family: 'Unica One', cursive;
 }
 .instructions p {
   margin: 0;
@@ -41,12 +43,26 @@ content {
 .score {
   grid-area: 4 / 2 / 5 / 3;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  color: #d73739;
 }
 
 .upnext {
   grid-area: 3 / 4 / 4 / 5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.upnext-group {
+  border: 5px solid #f19820;
+  padding: 5px;
+  background-color: white;
+}
+.upnext p {
+  margin: 5px 0 5px 0;
 }
 .game-controls {
   grid-area: 4 / 4 / 5 / 5;
@@ -64,11 +80,15 @@ content {
   justify-content: center;
   align-items: center;
 }
+.settings {
+  grid-area: 2 / 4 / 3/ 5;
+}
 .header h1 {
   color: #7e8e65;
 }
 .nav-area {
   grid-area: 2 / 2 / 3 / 3;
+  font-family: 'Unica One', cursive;
 }
 .board-container {
   display: flex;
@@ -93,25 +113,32 @@ content {
   flex-wrap: wrap;
   height: 200px;
   width: 100px;
-  border: 1px solid black;
   background-color: white;
+  margin: 15px;
+  padding: 0 0 0 15px;
 }
 .upnext-square {
-  height: 25px;
-  width: 25px;
+  height: 23px;
+  width: 23px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid white;
 }
 .filled {
   background-color: aqua;
 }
+.score h3 {
+  margin: 0;
+}
 .score p {
+  font-family: 'Monoton', cursive;
   font-size: 72px;
   color: #d73739;
+  margin: 0;
 }
 #pause-button {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Unica One', cursive;
   font-size: 2rem;
   height: 3rem;
   background-color: #bec358;
@@ -120,7 +147,7 @@ content {
 #reset-button {
   font-family: 'Montserrat', sans-serif;
   font-size: 2rem;
-  height: 3rem;
+  min-height: 3rem;
   background-color: #f4b4b7;
   margin: 10px;
 }
@@ -144,4 +171,66 @@ content {
 }
 .pole {
   background-color: #bec358;
+}
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: '';
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #2196f3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
 }
