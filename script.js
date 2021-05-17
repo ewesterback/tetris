@@ -1,8 +1,7 @@
-console.log('hi')
-////////////////////////////////
+///////////////////////////////////////////////////////////////
 // Global variables
-///////////////////////////////
-
+//////////////////////////////////////////////////////////////
+// html elements
 const gameGrid = document.querySelector('.board-container')
 const BODY = document.querySelector('body')
 const upnextGrid = document.querySelector('.upnext-grid')
@@ -11,51 +10,44 @@ const instructionsEl = document.querySelector('.instructions')
 const upnextGroupEl = document.querySelector('.upnext-group')
 const darkModeLabel = document.querySelector('.settings p')
 const scoreEle = document.querySelector('.score p')
+// objects and arrays to store current shape and next shapes info
 const currentShapeObj = {
   curPosition: [],
   curShape: [],
   curShapeName: '',
   curGhostPos: []
 }
+let upNextArray = []
+// Master array hold info on where placed shapes are on the board
 const masterGameArr = new Array(200)
 for (i = 0; i < masterGameArr.length; i++) {
   masterGameArr[i] = 0
 }
+// Game state variables
 let gameActive = true
 let gamePaused = true
 let darkMode = false
 let score = 0
 let myInterval
-let upNextArray = []
-const nextShapeObj1 = {
-  shape: [],
-  shapeName: ''
-}
-const nextShapeObj2 = {
-  shape: [],
-  shapeName: ''
-}
-const nextShapeObj3 = {
-  shape: [],
-  shapeName: ''
-}
 
 // ///////////////////////////////////
 // Functions
 // ///////////////////////////////////
 
-// ----------------------------------
-// range
+// --------------------------------------------------------------
+// range()
 // Desc: Creates an array with a beginning, ending, and step value
-// ----------------------------------
+// I/O: Takes in integers for the beginning, end, and step values
+//      Returns the created array
+// ---------------------------------------------------------------
 const range = (begin, end, step) =>
   Array.from({ length: (end - begin) / step + 1 }, (_, i) => begin + i * step)
 
-// ---------------------------------
-// setUpPage -may need to deconstruct from function
-// Sets up game grid
+// ---------------------------------------------------------------
+// setUpPage()
+// Desc: Sets up the html for the game grid and upnext grid
 // I/O: none
-// -------------------------------
+// ----------------------------------------------------------------
 const setUpPage = () => {
   const gridArray = range(0, 199, 1)
   let className = 'grid-square'
@@ -73,13 +65,13 @@ const setUpPage = () => {
     }
   }
 }
-// ----------------------------------
-// fillSquare
-// Descr: HTML side to color squares
+// ------------------------------------------------------------------
+// fillSquare(posArr, colorClass)
+// Desc: HTML side to color squares.  Also colors the ghost shape
 // I/O:
 //    input: posArr - array with positions (numeric)  - required
 //          colorClass - class to denote color - optional
-// ----------------------------------
+// ---------------------------------------------------------------
 const fillSquare = (posArr, colorClass = 'filled') => {
   let oldGhostPosition = currentShapeObj.curGhostPos
   let newGhostPosition = ghostShape(posArr, oldGhostPosition, colorClass)
@@ -88,20 +80,21 @@ const fillSquare = (posArr, colorClass = 'filled') => {
     document.getElementById(`pos${pos}`).className = `grid-square ${colorClass}`
   })
 }
-// ----------------------------------
-// clearSquare
+// ----------------------------------------------------------------
+// clearSquare(posArr)
 // Descr: HTML and javascript side to clear squares
 // I/O:
 //    input: posArr - array with positions (numeric)  - required
-// ----------------------------------
+//    output: none
+// --------------------------------------------------------------
 const clearSquare = (posArr) => {
   posArr.forEach((pos) => {
     document.getElementById(`pos${pos}`).className = `grid-square`
     masterGameArr[pos] = 0
   })
 }
-// -----------------------------------
-// goodToMove
+// ---------------------------------------------------------------
+// goodToMove(oldArr, newArr, dir)
 // Desc: checks if shape can move in the designated direction
 // Input: oldArr - required - array of old positions
 //        newArr - required - array of position the shap is being moved to
@@ -109,7 +102,7 @@ const clearSquare = (posArr) => {
 // Output: 1 if able to move to the new position,
 //          0 if there is something in the way
 //          2 if it reached as far as it can go down
-// ------------------------------------
+// -----------------------------------------------------------------
 const goodToMove = (oldArr, newArr, dir) => {
   if (newArr.some((num) => num > 199)) {
     return 2
@@ -136,11 +129,14 @@ const goodToMove = (oldArr, newArr, dir) => {
 
   return 1
 }
-// --------------------------------------
-// findNewPos
-// find the new position based off of the given direction
-// +/-10 moves in y direction, +/-1 moves in x direction
-// ------------------------------------
+// ---------------------------------------------------------------------
+// findNewPos(oldPosArr, dir)
+// Desc:  find the new position based off of the given direction
+//        +/-10 moves in y direction, +/-1 moves in x direction
+// I/O: Input:  oldPosArr - array containing numerical positions - req
+//              dir - string of direction to move shape - req
+// Output: Returns new position array
+// -------------------------------------------------------------------
 const findNewPos = (oldPosArr, dir) => {
   let newPosArr = []
   switch (dir) {
@@ -164,13 +160,14 @@ const findNewPos = (oldPosArr, dir) => {
   }
   return newPosArr
 }
-//
-// ------------------------------------
-// moveShape
-// Desc: Moves the shape based off of the direction (left, right, down)
-// Calls canMove to make sure the shape can move to the new position
-// then uses clearSquare() and fillSquare() to move shape
-// ___________________________________
+// ---------------------------------------------------------------------
+// moveShape(dir)
+// Desc:  Moves the shape based off of the direction (left, right, down)
+//        Calls canMove to make sure the shape can move to the new position
+//        then uses clearSquare() and fillSquare() to move shape
+// Input: dir - string representation of direction to move shape
+// Output: None
+// ----------------------------------------------------------------------
 const moveShape = (dir) => {
   let oldPosArr = currentShapeObj.curPosition
   let newPosArr = findNewPos(oldPosArr, dir)
@@ -186,6 +183,17 @@ const moveShape = (dir) => {
     newShape()
   }
 }
+// --------------------------------------------------------------------------
+// ghostShape(shapesCurrPosition, oldGhostPosition, colorClass)
+// Desc: determines where the ghost shape should be,
+//       clears out squares where ghost shape previously was
+//       fills in squares where ghost shape should be
+// Input: shapesCurrPosition - positional array of where main shape is - req
+//        oldGhostPosition - positional array of where the ghost shape previously was - opt
+//                                  -used to clear previous position
+//        colorClass - string of main shapes name to use to fill square with correct color
+// Output: shapesOldPosition - the current position of the ghost shape as a numerical position array
+// -----------------------------------------------------------------------------
 const ghostShape = (shapesCurrPosition, oldGhostPosition = [], colorClass) => {
   let shapeAtBottom = false
   let shapesOldPosition = shapesCurrPosition
@@ -210,12 +218,13 @@ const ghostShape = (shapesCurrPosition, oldGhostPosition = [], colorClass) => {
     ).className = `grid-square ${ghostColorClass}`
   })
 
-  //fillSquare(shapesOldPosition, 'ghost')
   return shapesOldPosition
 }
-// -----------------------------------
-// reset()
-// -----------------------------------
+// ------------------------------------------------------------------
+// resetBoard()
+// Desc: resets game, triggered by start again button
+// I/O: none
+// --------------------------------------------------------------------
 const resetBoard = () => {
   startStopInterval('pause')
   for (i = 0; i < masterGameArr.length; i++) {
@@ -231,10 +240,12 @@ const resetBoard = () => {
   document.querySelector('#pause-button').innerText = 'pause'
   startStopInterval('start')
 }
-// -----------------------------------
-// endGame()
-// checks endgame consitions and returns true if no more shapes can enter
-// -----------------------------------
+// ------------------------------------------------------------------------------
+// endGame(incomingShapeArr)
+// Desc: checks endgame conditions and returns true if no more shapes can enter
+// Input: incomingShapeArr -numeric positional array of incoming shape -req
+// Output: true if game is over, false if game is not over
+// ---------------------------------------------------------------------------
 const endGame = (incomingShapeArr) => {
   let incomingPosInMaster = []
   incomingShapeArr.forEach((pos) => {
@@ -249,13 +260,17 @@ const endGame = (incomingShapeArr) => {
     return false
   }
 }
-// ------------------------------------
-// creates upnext array and fills out upnext grid
-// -------------------------------------
+// ------------------------------------------------------------------------------
+// createUpNext()
+// Desc: creates upnext array and fills out upnext grid
+// Input: none
+// Ouput: none
+// ------------------------------------------------------------------------------
 const createUpNext = () => {
   let randomNum
   let nextShape
   let nextShapeName
+  // fills out upNextArray and accounts for new game or just updating array
   if (upNextArray.length < 3) {
     for (let i = 1; i <= 3; i++) {
       randomNum = Math.floor(Math.random() * 7)
@@ -275,12 +290,14 @@ const createUpNext = () => {
     nextShapeName = shapeNameMatrix[randomNum]
     upNextArray.push([nextShape, nextShapeName])
   }
+  //  clears out upnext grid to prep for new shapes
   for (let j = 0; j < 8; j++) {
     for (let i = 0; i < 4; i++) {
       let nextId = `next${j}${i}`
       document.getElementById(nextId).className = `upnext-square`
     }
   }
+  // fills out upnext grid
   let startingRow = 0
   for (let i = 0; i < upNextArray.length; i++) {
     let newDisplayShapeArry = upNextArray[i][0]
@@ -305,8 +322,12 @@ const createUpNext = () => {
   }
 }
 // -----------------------------------
-// newShape
-// creates a new shape only if game active
+// newShape()
+// Desc: creates a new shape only if game active.
+//       calls checkRow to clear filled rows as needed
+//       calls createUpNext to pull next shape and update upnext array
+//       calls endGame to make sure shape can be placed
+// I/O: none
 // ----------------------------------
 const newShape = () => {
   if (gameActive === false) {
@@ -329,7 +350,6 @@ const newShape = () => {
       }
     }
   }
-
   if (endGame(newPosArr) === false) {
     currentShapeObj.curPosition = newPosArr
     currentShapeObj.curGhostPos = []
@@ -337,7 +357,10 @@ const newShape = () => {
   }
 }
 // ---------------------------------
-//  create shape matrix
+// createShapeMatrix()
+// Desc: creates shape matrix to store shapes and 1s and 0s
+// Input: none
+// Output: shapeMatrix
 // --------------------------------
 const createShapeMatrix = () => {
   const square = [
@@ -368,11 +391,13 @@ const createShapeMatrix = () => {
   return [square, rightL, leftL, tshape, zig, zag, pole]
 }
 // ----------------------------------------------------
-// checkRow
-// checks if a row is filled
-// if it is, clears the row by deleting the row in and adding a new row on top
+// checkRow()
+// Desc: checks if a row is filled
+//       if it is, clears the row by deleting the row in and adding a new row on top
+// I/O: none
 // ---------------------------------------------------
 const checkRow = () => {
+  // goes through each row to see if it has been filled
   let rowCheckCounter = 0
   for (let i = 0; i < masterGameArr.length; i++) {
     if (i % 10 === 0) {
@@ -425,7 +450,11 @@ const checkRow = () => {
   }
 }
 // -------------------------------
-// rotateShape
+// rotateShape()
+// Desc: rotates shape by flipping rows and columns and centering around
+//       the center of mass of the current position
+// Input: none - grabs current position from currentShapeObj
+// Output: none - puts new position into currentShapeObj
 // ------------------------------
 const rotateShape = () => {
   let curShape = currentShapeObj.curShape
@@ -448,11 +477,15 @@ const rotateShape = () => {
     currentShapeObj.curShape = newShape
   }
 }
-// ----------------------
-// centerMass
-// -------------------
+// -----------------------------------------------------------------------------
+// centerMass(oldPosArr, newShape)
+// Desc: centers the new orientation around the old positions center of mass
+// Input: oldPosArr - req - rotated shape positional array
+//        newShape - req - shape in 1s and 0s
+// Output: returns centered positional array of rotated shape
+// ------------------------------------------------------------------------------
 const centerMass = (oldPosArr, newShape) => {
-  let startNum = 54 //54 since it's in the middle.  This will be centered in centerMass
+  let startNum = 54 //54 since it's in the middle.  This will be centered later
   let newStartPosArr = []
   let newPos = 0
   // takes 1s and 0s and translates to positional array in middle of board
@@ -517,8 +550,7 @@ const centerMass = (oldPosArr, newShape) => {
     newPosArrY = newPosArrY.map((val) => val - 1)
   }
   // account for elements in the way
-  // If another square is in the way,
-  // won't rotate.  For future, should build in some nudging
+  // If another square is in the way, won't rotate.
   let posInMaster = []
   // takes x and y arrays and zips into position array
   let newZippedArr = zipper(newPosArrX, newPosArrY)
@@ -531,10 +563,12 @@ const centerMass = (oldPosArr, newShape) => {
 
   return newZippedArr
 }
-// --------------------------
-// zipper
-// takes x and y array and zips them into positional arrays
-// -------------------------
+// ----------------------------------------------------------------
+// zipper(xArr, yArr)
+// Desc: takes x and y array and zips them into positional arrays
+// Input: x and y position arrays
+// Output: zipped positional array
+// ---------------------------------------------------------------
 const zipper = (xArr, yArr) => {
   newZipped = []
   for (i = 0; i < xArr.length; i++) {
@@ -542,11 +576,12 @@ const zipper = (xArr, yArr) => {
   }
   return newZipped
 }
-// --------------------------
-// alwaysDown
-// moves shape down
-// referenced in startStopInterval to move shape down every second
-// -------------------------
+// ----------------------------------------------------------------
+// alwaysDown()
+// Desc: moves shape down
+//       referenced in startStopInterval to move shape down every second
+// I/O: none
+// -----------------------------------------------------------------
 function alwaysDown() {
   let oldPosArr = currentShapeObj.curPosition
   let newPosArr = findNewPos(oldPosArr, 'down')
@@ -562,12 +597,13 @@ function alwaysDown() {
     newShape()
   }
 }
-// ---------------------------
-// startStopInterval
-// takes a string and either stops or starts the interval
-// put in a seperate function to ensure that only one interval
-// is going at a time
-// ---------------------------
+// ------------------------------------------------------------------
+// startStopInterval(action)
+// Desc: takes a string and either stops or starts the interval
+//       put in a seperate function to ensure that only one interval
+//       is going at a time
+// Input: action - string for 'pause' or 'start' - req
+// --------------------------------------------------------------------
 const startStopInterval = (action) => {
   if (action === 'pause') {
     clearInterval(myInterval)
@@ -575,11 +611,11 @@ const startStopInterval = (action) => {
     myInterval = setInterval(alwaysDown, 1000)
   }
 }
-// --------------------------------
-// changeToDarkMode
-// triggered by toggle switch
-// changes white backgrounds to black and black test to white
-// -------------------------------
+// -------------------------------------------------------------------
+// changeToDarkMode()
+// Desc: triggered by darkmode toggle switch
+//       changes white backgrounds to black and black test to white
+// -------------------------------------------------------------------
 const changeToDarkMode = () => {
   BODY.style.backgroundImage = "url('darkmodeGPback.png')"
   overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)'
@@ -600,11 +636,11 @@ const changeToDarkMode = () => {
     updatedGridSquareEl[ele].style.border = '1px solid #1e3547'
   }
 }
-// ------------------------------------------
+// -----------------------------------------------------------------
 // changeToLightMode()
-// changes black backgrouns to white and white text to black
-// triggered by toggle switch
-// -------------------------------------------
+// Desc: changes black backgrouns to white and white text to black
+//       triggered by darkmode toggle switch
+// ------------------------------------------------------------------
 const changeToLightMode = () => {
   BODY.style.backgroundImage = "url('gamepageBackground.png')"
   overlay.style.backgroundColor = 'rgba(255, 255, 255, 0.8)'
@@ -642,7 +678,6 @@ class ElementFactory {
     return el
   }
 }
-
 class TetrisSquare extends ElementFactory {
   constructor(className, id) {
     super()
@@ -659,8 +694,8 @@ class TetrisSquare extends ElementFactory {
 }
 // calls setup page to add game grid and upnext grid
 setUpPage()
-// create html variable for the grid squares in the game board and up next
-// can't include with others since they are created above
+// create html variable for the grid squares in the game board and upnext
+// can't include with other html variable declarations since they are created above
 let gridSquareEl = document.querySelectorAll('.grid-square')
 let upnextSquareEl = document.querySelectorAll('.upnext-square')
 // creates matrix containing all possible shapes in 1s and 0s
@@ -686,7 +721,6 @@ document.addEventListener(
     if (event.defaultPrevented) {
       return // Do nothing if the event was already processed
     }
-
     switch (event.key) {
       case 'Down': // IE/Edge specific value
       case 'ArrowDown':
@@ -727,7 +761,6 @@ document.addEventListener(
 // handles play/pause button
 document.querySelector('#pause-button').onclick = function () {
   if (gamePaused === false && gameActive === true) {
-    //clearInterval(myInterval)
     startStopInterval('pause')
     gamePaused = true
     document.querySelector('.header h1').innerText = 'Game paused'
@@ -736,7 +769,6 @@ document.querySelector('#pause-button').onclick = function () {
     gamePaused = false
     document.querySelector('.header h1').innerText = "Let's play"
     document.querySelector('#pause-button').innerText = 'pause'
-    //myInterval = setInterval(alwaysDown, 1000)
     startStopInterval('start')
   }
 }
