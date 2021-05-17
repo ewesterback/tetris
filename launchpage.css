@@ -29,6 +29,9 @@ html {
 }
 .info {
   grid-area: 4 / 3 / 5 / 4;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 .button-grid {
   grid-area: 4 / 4 / 5 / 5;

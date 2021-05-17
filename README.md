@@ -9,7 +9,7 @@
 
 
 ### *Description*
-This is a web-based browser game tetris game to aid with anxiety.  The left and right arrow keys move the shapes left to right, and the up arrow to rotate the pieces, and the down arrow to drop pieces.  One a row has been filled, that row disappears and the score increase
+This is a web-based browser tetris game to aid with anxiety as a form of distraction.  The launch page contains links to the tetris study and to the game.  The objective of tetris is to clear rows by filling the entire row.  Once no more shapes can enter the board, the game is over.  The left and right arrow keys move the shapes left to right, the up arrow rotates the pieces, and the down arrow drops pieces.  One a row has been filled, that row disappears and the score increases.
 ***
 
 ### *Technologies Used*
@@ -20,27 +20,41 @@ This is a web-based browser game tetris game to aid with anxiety.  The left and 
 ***
 
 ### *Getting Started*
-* To get started, create select start a new game and begin
+* To get started, select play on the launch page.  On the game page, select play. After the game is over, select the start again button to begin again.
 * A Trello board as used to track application and can be viewed [here](https://trello.com/b/u9ycsxfA/project-1).
-* The project has been deployed and can be viewed [here](link).
+* The project has been deployed and can be viewed [here](http://tetris-for-aniexty.surge.sh/)).
 ***
 
 ### *Screenshots*
-##### Image 1
-![Imgur](https://imgur.com/rKEoZ65.jpg)
-##### Image 2
-![Image]()
-##### Image 3
-![Image]()
+##### Launch Page
+![Lauchpage](https://imgur.com/qTlOAjJ.jpg)
+##### Right before the row is cleared
+![Pre-row clear](https://imgur.com/Cje0PAG.jpg)
+##### After the row has been cleared
+![Post-row clear](https://imgur.com/GcGUB9D.jpg)
+##### Game Over
+![Game Over](https://imgur.com/fo704Bo.jpg)
+##### Darkmode
+![Darkmode](https://imgur.com/EF3HLkz.jpg)
 
 ***
 
 ### *Future Updates*
-- [x] Update 1
-- [ ] Update 2
-- [ ] Update 3
-- [x] ~~crossed off~~
+- [x] ~~Include ghost shape~~
+- [ ] Add functionality for touchscreen and mouse controls to move and rotate shapes
+- [ ] Keep track of high scores
+
 ***
 
 ### *Credits*
-##### Images: [Imgur](website)
+##### Tools utilized: 
+*Background design: [Canva](https://www.canva.com/)
+*CSS Grid Layout: [Layoutit!](https://grid.layoutit.com/)
+*Color picker: [Google](https://grid.layoutit.com/)
+
+##### References:
+*Article on using tetris for anxiety: [Mental Floss](https://www.mentalfloss.com/article/563624/tetris-could-help-relieve-anxiety-stress)
+*HTML/CSS/Javascript references:
+**[W3 schools](https://www.w3schools.com/)
+**[MDN](https://developer.mozilla.org/en-US/)
+
