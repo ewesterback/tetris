@@ -38,7 +38,7 @@ h3 {
 }
 .instructions {
   background-color: white;
-  border: 5px solid #fbce45;
+  border: 5px solid #8fa3b4;
   color: black;
   margin: 5px;
   padding: 5px;
@@ -115,6 +115,15 @@ h3 {
 .nav-area {
   grid-area: 2 / 2 / 3 / 3;
   font-family: 'Unica One', cursive;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+a {
+  text-decoration: none;
+  padding: 5px;
+  background-color: #fbce45;
+  margin: 0 10px 0 10px;
 }
 .board-container {
   display: flex;
@@ -204,6 +213,30 @@ h3 {
 }
 .pole {
   background-color: #bec358;
+}
+.ghost {
+  background-color: teal;
+}
+.square-ghost {
+  background-color: rgba(244, 180, 183, 0.3);
+}
+.rightL-ghost {
+  background-color: rgba(241, 152, 32, 0.3);
+}
+.leftL-ghost {
+  background-color: rgba(126, 142, 101, 0.3);
+}
+.tshape-ghost {
+  background-color: rgba(143, 163, 180, 0.3);
+}
+.zig-ghost {
+  background-color: rgba(215, 127, 55, 0.2);
+}
+.zag-ghost {
+  background-color: rgba(251, 205, 69, 0.3);
+}
+.pole-ghost {
+  background-color: rgba(190, 195, 88, 0.3);
 }
 /* The switch - the box around the slider */
 .switch {

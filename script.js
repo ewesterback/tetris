@@ -7,18 +7,15 @@ const gameGrid = document.querySelector('.board-container')
 const BODY = document.querySelector('body')
 const upnextGrid = document.querySelector('.upnext-grid')
 const overlay = document.querySelector('.overlay')
-console.log(overlay)
 const instructionsEl = document.querySelector('.instructions')
 const upnextGroupEl = document.querySelector('.upnext-group')
 const darkModeLabel = document.querySelector('.settings p')
 const scoreEle = document.querySelector('.score p')
-console.log(upnextGroupEl)
-//const gridSquareEl = document.querySelectorAll('.grid-square')
-//const upnextSquareEl = document.querySelectorAll('.upnext-square')
 const currentShapeObj = {
   curPosition: [],
   curShape: [],
-  curShapeName: ''
+  curShapeName: '',
+  curGhostPos: []
 }
 const masterGameArr = new Array(200)
 for (i = 0; i < masterGameArr.length; i++) {
@@ -84,6 +81,9 @@ const setUpPage = () => {
 //          colorClass - class to denote color - optional
 // ----------------------------------
 const fillSquare = (posArr, colorClass = 'filled') => {
+  let oldGhostPosition = currentShapeObj.curGhostPos
+  let newGhostPosition = ghostShape(posArr, oldGhostPosition, colorClass)
+  currentShapeObj.curGhostPos = newGhostPosition
   posArr.forEach((pos) => {
     document.getElementById(`pos${pos}`).className = `grid-square ${colorClass}`
   })
@@ -138,6 +138,8 @@ const goodToMove = (oldArr, newArr, dir) => {
 }
 // --------------------------------------
 // findNewPos
+// find the new position based off of the given direction
+// +/-10 moves in y direction, +/-1 moves in x direction
 // ------------------------------------
 const findNewPos = (oldPosArr, dir) => {
   let newPosArr = []
@@ -166,6 +168,8 @@ const findNewPos = (oldPosArr, dir) => {
 // ------------------------------------
 // moveShape
 // Desc: Moves the shape based off of the direction (left, right, down)
+// Calls canMove to make sure the shape can move to the new position
+// then uses clearSquare() and fillSquare() to move shape
 // ___________________________________
 const moveShape = (dir) => {
   let oldPosArr = currentShapeObj.curPosition
@@ -181,6 +185,33 @@ const moveShape = (dir) => {
     })
     newShape()
   }
+}
+const ghostShape = (shapesCurrPosition, oldGhostPosition = [], colorClass) => {
+  let shapeAtBottom = false
+  let shapesOldPosition = shapesCurrPosition
+  let shapesNewPosition
+  let canMoveResult = 0
+  while (shapeAtBottom === false) {
+    shapesNewPosition = findNewPos(shapesOldPosition, 'down')
+    canMoveResult = goodToMove(shapesOldPosition, shapesNewPosition, 'down')
+    if (canMoveResult !== 2) {
+      shapesOldPosition = shapesNewPosition
+    } else {
+      shapeAtBottom = true
+    }
+  }
+  if (oldGhostPosition.length > 2) {
+    clearSquare(oldGhostPosition)
+  }
+  let ghostColorClass = `${colorClass}-ghost`
+  shapesOldPosition.forEach((pos) => {
+    document.getElementById(
+      `pos${pos}`
+    ).className = `grid-square ${ghostColorClass}`
+  })
+
+  //fillSquare(shapesOldPosition, 'ghost')
+  return shapesOldPosition
 }
 // -----------------------------------
 // reset()
@@ -202,6 +233,7 @@ const resetBoard = () => {
 }
 // -----------------------------------
 // endGame()
+// checks endgame consitions and returns true if no more shapes can enter
 // -----------------------------------
 const endGame = (incomingShapeArr) => {
   let incomingPosInMaster = []
@@ -218,7 +250,7 @@ const endGame = (incomingShapeArr) => {
   }
 }
 // ------------------------------------
-//
+// creates upnext array and fills out upnext grid
 // -------------------------------------
 const createUpNext = () => {
   let randomNum
@@ -253,7 +285,6 @@ const createUpNext = () => {
   for (let i = 0; i < upNextArray.length; i++) {
     let newDisplayShapeArry = upNextArray[i][0]
     let colorClass = upNextArray[i][1]
-    console.log(`${colorClass} and ${startingRow}`)
     for (let x = 0; x < newDisplayShapeArry[0].length; x++) {
       if (newDisplayShapeArry[0][x] === 1) {
         let newID = `next${startingRow}${x}`
@@ -275,6 +306,7 @@ const createUpNext = () => {
 }
 // -----------------------------------
 // newShape
+// creates a new shape only if game active
 // ----------------------------------
 const newShape = () => {
   if (gameActive === false) {
@@ -300,6 +332,7 @@ const newShape = () => {
 
   if (endGame(newPosArr) === false) {
     currentShapeObj.curPosition = newPosArr
+    currentShapeObj.curGhostPos = []
     fillSquare(newPosArr, starterShapeName)
   }
 }
@@ -334,9 +367,11 @@ const createShapeMatrix = () => {
   const pole = [[1, 1, 1, 1]]
   return [square, rightL, leftL, tshape, zig, zag, pole]
 }
-// ---------
+// ----------------------------------------------------
 // checkRow
-// --------
+// checks if a row is filled
+// if it is, clears the row by deleting the row in and adding a new row on top
+// ---------------------------------------------------
 const checkRow = () => {
   let rowCheckCounter = 0
   for (let i = 0; i < masterGameArr.length; i++) {
@@ -376,6 +411,7 @@ const checkRow = () => {
         gameGrid.insertBefore(mySquare, gameGrid.childNodes[0])
       }
       let updatedGridSquareEl = document.querySelectorAll('.grid-square')
+      // checks for darkmode/lightmode state to determine how the grid should be colored
       if (darkMode === true) {
         for (let ele = 0; ele < updatedGridSquareEl.length; ele++) {
           updatedGridSquareEl[ele].style.border = '1px solid #1e3547'
@@ -539,9 +575,13 @@ const startStopInterval = (action) => {
     myInterval = setInterval(alwaysDown, 1000)
   }
 }
+// --------------------------------
+// changeToDarkMode
+// triggered by toggle switch
+// changes white backgrounds to black and black test to white
+// -------------------------------
 const changeToDarkMode = () => {
   BODY.style.backgroundImage = "url('darkmodeGPback.png')"
-  console.log(`darkmode ${darkmodeCounter}`)
   overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)'
   instructionsEl.style.backgroundColor = 'black'
   instructionsEl.style.color = 'white'
@@ -560,6 +600,11 @@ const changeToDarkMode = () => {
     updatedGridSquareEl[ele].style.border = '1px solid #1e3547'
   }
 }
+// ------------------------------------------
+// changeToLightMode()
+// changes black backgrouns to white and white text to black
+// triggered by toggle switch
+// -------------------------------------------
 const changeToLightMode = () => {
   BODY.style.backgroundImage = "url('gamepageBackground.png')"
   overlay.style.backgroundColor = 'rgba(255, 255, 255, 0.8)'
@@ -581,11 +626,13 @@ const changeToLightMode = () => {
   }
 }
 
-// //////////////////////////////////////
-// //////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////
 // main code
-// ////////////////////////////////////
-// //////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////
+
+// setup for grid creation
 class ElementFactory {
   createElement(type, props) {
     let el = document.createElement(type)
@@ -610,10 +657,13 @@ class TetrisSquare extends ElementFactory {
     })
   }
 }
+// calls setup page to add game grid and upnext grid
 setUpPage()
-const gridSquareEl = document.querySelectorAll('.grid-square')
-const upnextSquareEl = document.querySelectorAll('.upnext-square')
-console.log(gridSquareEl)
+// create html variable for the grid squares in the game board and up next
+// can't include with others since they are created above
+let gridSquareEl = document.querySelectorAll('.grid-square')
+let upnextSquareEl = document.querySelectorAll('.upnext-square')
+// creates matrix containing all possible shapes in 1s and 0s
 const shapeMatrix = createShapeMatrix()
 const shapeNameMatrix = [
   'square',
@@ -624,8 +674,8 @@ const shapeNameMatrix = [
   'zag',
   'pole'
 ]
+// queues up first shape
 newShape()
-//let myInterval = setInterval(alwaysDown, 1000)
 
 // /////////////////////////////////
 // Event Listeners
@@ -666,22 +716,15 @@ document.addEventListener(
           moveShape('right')
         }
         break
-      case 'Enter':
-        // Do something for "enter" or "return" key press.
-        break
-      case 'Esc': // IE/Edge specific value
-      case 'Escape':
-        // Do something for "esc" key press.
-        break
       default:
         return // Quit when this doesn't handle the key event.
     }
-
     // Cancel the default action to avoid it being handled twice
     event.preventDefault()
   },
   true
 )
+// handles play/pause button
 document.querySelector('#pause-button').onclick = function () {
   if (gamePaused === false && gameActive === true) {
     //clearInterval(myInterval)
@@ -697,28 +740,22 @@ document.querySelector('#pause-button').onclick = function () {
     startStopInterval('start')
   }
 }
+//handles reset buton
 document.querySelector('#reset-button').onclick = function () {
   resetBoard()
 }
+// when clicking the darkmode toggle, it triggers twice
+// special handling was added to keep track of which state it should be in
 let darkmodeCounter = 0
-// document.getElementById('darkmode').addEventListener('click', () => {
-//   console.log(darkmodeCounter)
-//   darkmodeCounter++
-//   //console.log('ay')
-// })
 document.getElementById('darkmode').addEventListener('click', () => {
   if (darkmodeCounter % 2 === 0) {
     if (darkmodeCounter % 4 === 0) {
       darkMode = true
       changeToDarkMode()
-      console.log('in darkmode if')
     } else {
-      console.log('inlightmode if')
       darkMode = false
       changeToLightMode()
     }
   }
-  console.log(darkmodeCounter)
   darkmodeCounter++
-  //console.log('ay')
 })
