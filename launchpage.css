@@ -30,17 +30,31 @@ html {
 .info {
   grid-area: 4 / 3 / 5 / 4;
 }
-.button {
+.button-grid {
   grid-area: 4 / 4 / 5 / 5;
   display: flex;
-  align-content: center;
+  align-items: center;
   justify-content: center;
   font-size: 2rem;
-  color: #f19820;
+  font-family: 'Unica One', cursive;
 }
 .button a {
-  align-content: center;
+  align-items: center;
   justify-content: center;
+}
+.button a:link,
+.button a:visited {
+  background-color: #d73739;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  /*display: inline-block;*/
+}
+
+.button a:hover,
+.button a:active {
+  background-color: #bd2f32;
 }
 
 .title {

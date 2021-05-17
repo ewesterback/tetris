@@ -13,11 +13,15 @@ body {
 }
 content {
   display: grid;
-  grid-template-columns: 5% 1fr 300px 1fr 5%;
-  grid-template-rows: 5% 1fr 300px 300px 1fr 5%;
+  grid-template-columns: 3% 1fr 300px 1fr 3%;
+  grid-template-rows: 3% 1fr 400px 200px 1fr 3%;
   gap: 0px 0px;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
+}
+h3 {
+  font-size: 1.5rem;
+  margin: 0;
 }
 .overlay {
   grid-area: 2 / 2 / 6 / 5;
@@ -26,21 +30,25 @@ content {
 .how-to-play {
   grid-area: 3 / 2 / 4 / 3;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  color: #8fa3b4;
+  font-family: 'Unica One', cursive;
 }
 .instructions {
   background-color: white;
   border: 5px solid #fbce45;
+  color: black;
   margin: 5px;
   padding: 5px;
-  font-family: 'Unica One', cursive;
+  font-family: 'Montserrat', sans-serif;
 }
 .instructions p {
   margin: 0;
   padding: 5px;
 }
-.score {
+.score-group {
   grid-area: 4 / 2 / 5 / 3;
   display: flex;
   flex-direction: column;
@@ -61,8 +69,10 @@ content {
   padding: 5px;
   background-color: white;
 }
-.upnext p {
+.upnext h3 {
   margin: 5px 0 5px 0;
+  font-family: 'Unica One', cursive;
+  color: #f19820;
 }
 .game-controls {
   grid-area: 4 / 4 / 5 / 5;
@@ -79,12 +89,28 @@ content {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: 'Unica One', cursive;
+  margin: 0;
 }
 .settings {
-  grid-area: 2 / 4 / 3/ 5;
+  grid-area: 2 / 4 / 3 / 5;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+}
+.settings label {
+  padding: 0;
+  margin: 5px;
+}
+.settings p {
+  padding: 0;
+  margin: 5px;
+  font-size: 14px;
 }
 .header h1 {
   color: #7e8e65;
+  margin: 0 0 0 0;
 }
 .nav-area {
   grid-area: 2 / 2 / 3 / 3;
@@ -129,13 +155,20 @@ content {
   background-color: aqua;
 }
 .score h3 {
+  font-family: 'Unica One', cursive;
   margin: 0;
+  text-align: center;
+  padding: 0 5px;
 }
 .score p {
   font-family: 'Monoton', cursive;
-  font-size: 72px;
+  font-size: 64px;
   color: #d73739;
   margin: 0;
+  text-align: center;
+  background-color: white;
+  min-width: 245px;
+  border: 5px solid #d73739;
 }
 #pause-button {
   font-family: 'Unica One', cursive;
@@ -145,7 +178,7 @@ content {
   margin: 10px;
 }
 #reset-button {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Unica One', cursive;
   font-size: 2rem;
   min-height: 3rem;
   background-color: #f4b4b7;
@@ -176,8 +209,8 @@ content {
 .switch {
   position: relative;
   display: inline-block;
-  width: 60px;
-  height: 34px;
+  width: 40px;
+  height: 23px;
 }
 
 /* Hide default HTML checkbox */
@@ -203,32 +236,32 @@ content {
 .slider:before {
   position: absolute;
   content: '';
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
+  height: 17px;
+  width: 17px;
+  left: 3px;
+  bottom: 3px;
   background-color: white;
   -webkit-transition: 0.4s;
   transition: 0.4s;
 }
 
 input:checked + .slider {
-  background-color: #2196f3;
+  background-color: #bec358;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196f3;
+  box-shadow: 0 0 1px #bec358;
 }
 
 input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
+  -webkit-transform: translateX(17px);
+  -ms-transform: translateX(17px);
+  transform: translateX(17px);
 }
 
 /* Rounded sliders */
 .slider.round {
-  border-radius: 34px;
+  border-radius: 23px;
 }
 
 .slider.round:before {

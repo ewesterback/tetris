@@ -10,6 +10,8 @@ const overlay = document.querySelector('.overlay')
 console.log(overlay)
 const instructionsEl = document.querySelector('.instructions')
 const upnextGroupEl = document.querySelector('.upnext-group')
+const darkModeLabel = document.querySelector('.settings p')
+const scoreEle = document.querySelector('.score p')
 console.log(upnextGroupEl)
 //const gridSquareEl = document.querySelectorAll('.grid-square')
 //const upnextSquareEl = document.querySelectorAll('.upnext-square')
@@ -191,7 +193,7 @@ const resetBoard = () => {
   }
   document.querySelector('.header h1').innerText = "Let's play"
   score = 0
-  document.querySelector('.score p').innerText = `${score}`
+  scoreEle.innerText = `${score}`
   newShape()
   gameActive = true
   gamePaused = false
@@ -350,7 +352,7 @@ const checkRow = () => {
       let rowStartingNum = rowClearedNum * 10
       // increase score
       score += 1000
-      document.querySelector('.score p').innerText = `${score}`
+      scoreEle.innerText = `${score}`
       // update the master game array to remove row
       masterGameArr.splice(rowStartingNum, 10)
       masterGameArr.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
@@ -551,6 +553,8 @@ const changeToDarkMode = () => {
   }
   gameGrid.style.backgroundColor = 'black'
   gameGrid.style.border = '1px solid white'
+  darkModeLabel.style.color = 'white'
+  scoreEle.style.backgroundColor = 'black'
   let updatedGridSquareEl = document.querySelectorAll('.grid-square')
   for (let ele = 0; ele < updatedGridSquareEl.length; ele++) {
     updatedGridSquareEl[ele].style.border = '1px solid #1e3547'
@@ -569,6 +573,8 @@ const changeToLightMode = () => {
   }
   gameGrid.style.backgroundColor = 'white'
   gameGrid.style.border = '1px solid black'
+  darkModeLabel.style.color = 'black'
+  scoreEle.style.backgroundColor = 'white'
   let updatedGridSquareEl = document.querySelectorAll('.grid-square')
   for (let ele = 0; ele < updatedGridSquareEl.length; ele++) {
     updatedGridSquareEl[ele].style.border = '1px solid #e8f2d8'
