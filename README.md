@@ -48,13 +48,13 @@ This is a web-based browser tetris game to aid with anxiety as a form of distrac
 
 ### *Credits*
 ##### Tools utilized: 
-*Background design: [Canva](https://www.canva.com/)
-*CSS Grid Layout: [Layoutit!](https://grid.layoutit.com/)
-*Color picker: [Google](https://grid.layoutit.com/)
+* Background design: [Canva](https://www.canva.com/)
+* CSS Grid Layout: [Layoutit!](https://grid.layoutit.com/)
+* Color picker: [Google](https://grid.layoutit.com/)
 
 ##### References:
-*Article on using tetris for anxiety: [Mental Floss](https://www.mentalfloss.com/article/563624/tetris-could-help-relieve-anxiety-stress)
-*HTML/CSS/Javascript references:
-**[W3 schools](https://www.w3schools.com/)
-**[MDN](https://developer.mozilla.org/en-US/)
+* Article on using tetris for anxiety: [Mental Floss](https://www.mentalfloss.com/article/563624/tetris-could-help-relieve-anxiety-stress)
+* HTML/CSS/Javascript reference: [W3 schools](https://www.w3schools.com/)
+* HTML/CSS/Javascript reference: [MDN](https://developer.mozilla.org/en-US/)
+
 
