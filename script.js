@@ -239,8 +239,20 @@ const resetBoard = () => {
   document.querySelector('.header h1').innerText = "Let's play"
   score = 0
   scoreEle.innerText = `${score}`
-  newShape()
+  // for (let i = 0; i < upNextArray.length; i++) {
+  //   upNextArray.pop()
+  // }
+  console.log('oooooooooooooooooooooo')
+  upNextArray = []
   gameActive = true
+  console.log(upNextArray)
+  newShape()
+  console.log(`after new shape`)
+  console.log(upNextArray)
+  console.log('current shape')
+  console.log(currentShapeObj.curShape)
+  console.log(currentShapeObj.curShapeName)
+
   gamePaused = false
   document.querySelector('#pause-button').innerText = 'pause'
   timeInterval = 1000
@@ -273,21 +285,25 @@ const endGame = (incomingShapeArr) => {
 // Ouput: none
 // ------------------------------------------------------------------------------
 const createUpNext = () => {
+  console.log('createUpNext')
   let randomNum
   let nextShape
   let nextShapeName
   // fills out upNextArray and accounts for new game or just updating array
   if (upNextArray.length < 3) {
+    console.log('upNextArray.length < 3')
     for (let i = 1; i <= 3; i++) {
       randomNum = Math.floor(Math.random() * 7)
       nextShape = shapeMatrix[randomNum]
       nextShapeName = shapeNameMatrix[randomNum]
       upNextArray.push([nextShape, nextShapeName])
     }
+    console.log('in createUpNext, current shape updated')
     randomNum = Math.floor(Math.random() * 7)
     currentShapeObj.curShape = shapeMatrix[randomNum]
     currentShapeObj.curShapeName = shapeNameMatrix[randomNum]
   } else {
+    console.log('x')
     let newShapeArry = upNextArray.shift()
     currentShapeObj.curShape = newShapeArry[0]
     currentShapeObj.curShapeName = newShapeArry[1]
@@ -341,8 +357,10 @@ const newShape = () => {
   }
   checkRow()
   createUpNext()
+  console.log('In new shape post createUpNext')
   let starterShape = currentShapeObj.curShape
   let starterShapeName = currentShapeObj.curShapeName
+  console.log(`starterShape = ${starterShapeName}`)
   let newPosArr = []
   for (let i = 0; i < starterShape[0].length; i++) {
     if (starterShape[0][i] === 1) {
