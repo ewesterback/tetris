@@ -8,7 +8,7 @@ const upnextGrid = document.querySelector('.upnext-grid')
 const overlay = document.querySelector('.overlay')
 const instructionsEl = document.querySelector('.instructions')
 const upnextGroupEl = document.querySelector('.upnext-group')
-const darkModeLabel = document.querySelector('.settings p')
+const settingsLabels = document.querySelectorAll('.settings p')
 const scoreEle = document.querySelector('.score p')
 // objects and arrays to store current shape and next shapes info
 const currentShapeObj = {
@@ -27,6 +27,7 @@ for (i = 0; i < masterGameArr.length; i++) {
 let gameActive = true
 let gamePaused = true
 let darkMode = false
+let ghostModeOff = false
 let score = 0
 let myInterval
 
@@ -208,15 +209,18 @@ const ghostShape = (shapesCurrPosition, oldGhostPosition = [], colorClass) => {
       shapeAtBottom = true
     }
   }
+
   if (oldGhostPosition.length > 2) {
     clearSquare(oldGhostPosition)
   }
-  let ghostColorClass = `${colorClass}-ghost`
-  shapesOldPosition.forEach((pos) => {
-    document.getElementById(
-      `pos${pos}`
-    ).className = `grid-square ${ghostColorClass}`
-  })
+  if (ghostModeOff === false) {
+    let ghostColorClass = `${colorClass}-ghost`
+    shapesOldPosition.forEach((pos) => {
+      document.getElementById(
+        `pos${pos}`
+      ).className = `grid-square ${ghostColorClass}`
+    })
+  }
 
   return shapesOldPosition
 }
@@ -629,7 +633,9 @@ const changeToDarkMode = () => {
   }
   gameGrid.style.backgroundColor = 'black'
   gameGrid.style.border = '1px solid white'
-  darkModeLabel.style.color = 'white'
+  for (let ele = 0; ele < settingsLabels.length; ele++) {
+    settingsLabels[ele].style.color = 'white'
+  }
   scoreEle.style.backgroundColor = 'black'
   let updatedGridSquareEl = document.querySelectorAll('.grid-square')
   for (let ele = 0; ele < updatedGridSquareEl.length; ele++) {
@@ -654,7 +660,9 @@ const changeToLightMode = () => {
   }
   gameGrid.style.backgroundColor = 'white'
   gameGrid.style.border = '1px solid black'
-  darkModeLabel.style.color = 'black'
+  for (let ele = 0; ele < settingsLabels.length; ele++) {
+    settingsLabels[ele].style.color = 'black'
+  }
   scoreEle.style.backgroundColor = 'white'
   let updatedGridSquareEl = document.querySelectorAll('.grid-square')
   for (let ele = 0; ele < updatedGridSquareEl.length; ele++) {
@@ -791,4 +799,15 @@ document.getElementById('darkmode').addEventListener('click', () => {
     }
   }
   darkmodeCounter++
+})
+let ghostModeCounter = 0
+document.getElementById('ghostshape').addEventListener('click', () => {
+  if (ghostModeCounter % 2 === 0) {
+    if (ghostModeCounter % 4 === 0) {
+      ghostModeOff = true
+    } else {
+      ghostModeOff = false
+    }
+  }
+  ghostModeCounter++
 })
