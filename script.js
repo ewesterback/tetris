@@ -421,7 +421,6 @@ const checkRow = () => {
       scoreEle.innerText = `${score}`
       // speed up how fast the shapes come down
       timeInterval = timeInterval > 100 ? timeInterval - 15 : timeInterval
-      console.log(timeInterval)
       startStopInterval('pause')
       startStopInterval('start')
       // update the master game array to remove row
