@@ -30,6 +30,7 @@ let darkMode = false
 let ghostModeOff = false
 let score = 0
 let myInterval
+let timeInterval = 1000
 
 // ///////////////////////////////////
 // Functions
@@ -242,6 +243,7 @@ const resetBoard = () => {
   gameActive = true
   gamePaused = false
   document.querySelector('#pause-button').innerText = 'pause'
+  timeInterval = 1000
   startStopInterval('start')
 }
 // ------------------------------------------------------------------------------
@@ -417,6 +419,11 @@ const checkRow = () => {
       // increase score
       score += 1000
       scoreEle.innerText = `${score}`
+      // speed up how fast the shapes come down
+      timeInterval = timeInterval > 100 ? timeInterval - 15 : timeInterval
+      console.log(timeInterval)
+      startStopInterval('pause')
+      startStopInterval('start')
       // update the master game array to remove row
       masterGameArr.splice(rowStartingNum, 10)
       masterGameArr.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
@@ -612,7 +619,7 @@ const startStopInterval = (action) => {
   if (action === 'pause') {
     clearInterval(myInterval)
   } else if (action === 'start') {
-    myInterval = setInterval(alwaysDown, 1000)
+    myInterval = setInterval(alwaysDown, timeInterval)
   }
 }
 // -------------------------------------------------------------------
