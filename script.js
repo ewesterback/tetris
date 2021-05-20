@@ -715,6 +715,7 @@ newShape()
 // /////////////////////////////////
 // Event Listeners
 // /////////////////////////////////
+// for arrows
 document.addEventListener(
   'keydown',
   function (event) {

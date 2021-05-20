@@ -40,7 +40,11 @@ This is a web-based browser tetris game to aid with anxiety as a form of distrac
 ***
 
 ### *Future Updates*
+- [x] ~~Upnext shapes~~
+- [x] ~~Include Darkmode~~
 - [x] ~~Include ghost shape~~
+- [ ] Speed up game over time
+- [ ] Toggle option for ghost shape
 - [ ] Add functionality for touchscreen and mouse controls to move and rotate shapes
 - [ ] Keep track of high scores
 
@@ -50,7 +54,10 @@ This is a web-based browser tetris game to aid with anxiety as a form of distrac
 ##### Tools utilized: 
 * Background design: [Canva](https://www.canva.com/)
 * CSS Grid Layout: [Layoutit!](https://grid.layoutit.com/)
-* Color picker: [Google](https://grid.layoutit.com/)
+* Color picker: [Google](https://www.google.com/search?q=color+picker)
+* Google Fonts: [Unica One](https://fonts.google.com/specimen/Unica+One?query=unica)
+* Google Fonts: [Montserrat](https://fonts.google.com/specimen/Montserrat?query=mon)
+* Google Fonts: [Monoton](https://fonts.google.com/specimen/Monoton?query=monoton)
 
 ##### References:
 * Article on using tetris for anxiety: [Mental Floss](https://www.mentalfloss.com/article/563624/tetris-could-help-relieve-anxiety-stress)
