@@ -680,17 +680,21 @@ const changeToLightMode = () => {
     updatedGridSquareEl[ele].style.border = '1px solid #e8f2d8'
   }
 }
-
+// ------------------------------------------------------------------
+// checkEqualPosArr
+// Desc: checks if any position in arr1 is in arr2
+//       used to make sure ghost shape doesn't overwrite actual shape
+// Input: arr1 - req - position array (ghost array)
+//        arr2 - req - position array (current shape array)
+// Output: boolean - true if there is a shared position
+//                   false if there isn't a shared position
+// ------------------------------------------------------------------
 const checkEqualPosArr = (arr1, arr2) => {
-  console.log('----------')
   for (let i = 0; i < arr1.length; i++) {
-    console.log(`1: ${arr1[i]} - 2: ${arr2[i]} `)
     if (arr1.some((pos) => pos === arr2[i]) === true) {
-      console.log('true')
       return true
     }
   }
-  console.log('false')
   return false
 }
 
@@ -830,7 +834,6 @@ document.getElementById('ghostShapeCheck').addEventListener('click', () => {
       ) === false &&
       gameActive === true
     ) {
-      console.log('clear')
       clearSquare(currentShapeObj.curGhostPos)
     }
   } else {
