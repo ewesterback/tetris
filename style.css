@@ -169,6 +169,13 @@ a {
   text-align: center;
   padding: 0 5px;
 }
+.score h4 {
+  font-family: 'Unica One', cursive;
+  margin: 0;
+  text-align: center;
+  padding: 0 5px;
+  font-size: 1.25rem;
+}
 .score p {
   font-family: 'Monoton', cursive;
   font-size: 64px;

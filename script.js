@@ -10,6 +10,7 @@ const instructionsEl = document.querySelector('.instructions')
 const upnextGroupEl = document.querySelector('.upnext-group')
 const settingsLabels = document.querySelectorAll('.settings p')
 const scoreEle = document.querySelector('.score p')
+const highScoreEle = document.querySelector('.score h4')
 // objects and arrays to store current shape and next shapes info
 const currentShapeObj = {
   curPosition: [],
@@ -31,6 +32,7 @@ let ghostModeOff = false
 let score = 0
 let myInterval
 let timeInterval = 1000
+let highScore = 0
 
 // ///////////////////////////////////
 // Functions
@@ -239,20 +241,9 @@ const resetBoard = () => {
   document.querySelector('.header h1').innerText = "Let's play"
   score = 0
   scoreEle.innerText = `${score}`
-  // for (let i = 0; i < upNextArray.length; i++) {
-  //   upNextArray.pop()
-  // }
-  console.log('oooooooooooooooooooooo')
   upNextArray = []
   gameActive = true
-  console.log(upNextArray)
   newShape()
-  console.log(`after new shape`)
-  console.log(upNextArray)
-  console.log('current shape')
-  console.log(currentShapeObj.curShape)
-  console.log(currentShapeObj.curShapeName)
-
   gamePaused = false
   document.querySelector('#pause-button').innerText = 'pause'
   timeInterval = 1000
@@ -285,25 +276,21 @@ const endGame = (incomingShapeArr) => {
 // Ouput: none
 // ------------------------------------------------------------------------------
 const createUpNext = () => {
-  console.log('createUpNext')
   let randomNum
   let nextShape
   let nextShapeName
   // fills out upNextArray and accounts for new game or just updating array
   if (upNextArray.length < 3) {
-    console.log('upNextArray.length < 3')
     for (let i = 1; i <= 3; i++) {
       randomNum = Math.floor(Math.random() * 7)
       nextShape = shapeMatrix[randomNum]
       nextShapeName = shapeNameMatrix[randomNum]
       upNextArray.push([nextShape, nextShapeName])
     }
-    console.log('in createUpNext, current shape updated')
     randomNum = Math.floor(Math.random() * 7)
     currentShapeObj.curShape = shapeMatrix[randomNum]
     currentShapeObj.curShapeName = shapeNameMatrix[randomNum]
   } else {
-    console.log('x')
     let newShapeArry = upNextArray.shift()
     currentShapeObj.curShape = newShapeArry[0]
     currentShapeObj.curShapeName = newShapeArry[1]
@@ -357,10 +344,8 @@ const newShape = () => {
   }
   checkRow()
   createUpNext()
-  console.log('In new shape post createUpNext')
   let starterShape = currentShapeObj.curShape
   let starterShapeName = currentShapeObj.curShapeName
-  console.log(`starterShape = ${starterShapeName}`)
   let newPosArr = []
   for (let i = 0; i < starterShape[0].length; i++) {
     if (starterShape[0][i] === 1) {
@@ -437,6 +422,8 @@ const checkRow = () => {
       // increase score
       score += 1000
       scoreEle.innerText = `${score}`
+      highScore = highScore > score ? highScore : score
+      highScoreEle.innerText = `High Score : ${highScore}`
       // speed up how fast the shapes come down
       timeInterval = timeInterval > 100 ? timeInterval - 15 : timeInterval
       startStopInterval('pause')
@@ -809,29 +796,29 @@ document.querySelector('#pause-button').onclick = function () {
 document.querySelector('#reset-button').onclick = function () {
   resetBoard()
 }
-// when clicking the darkmode toggle, it triggers twice
-// special handling was added to keep track of which state it should be in
+// handles darkmode toggle
 let darkmodeCounter = 0
-document.getElementById('darkmode').addEventListener('click', () => {
-  if (darkmodeCounter % 2 === 0) {
-    if (darkmodeCounter % 4 === 0) {
-      darkMode = true
-      changeToDarkMode()
-    } else {
-      darkMode = false
-      changeToLightMode()
-    }
+document.getElementById('darkModeCheck').addEventListener('click', () => {
+  if (document.getElementById('darkModeCheck').checked === true) {
+    darkMode = true
+    changeToDarkMode()
+  } else {
+    darkMode = false
+    changeToLightMode()
   }
-  darkmodeCounter++
 })
-let ghostModeCounter = 0
-document.getElementById('ghostshape').addEventListener('click', () => {
-  if (ghostModeCounter % 2 === 0) {
-    if (ghostModeCounter % 4 === 0) {
-      ghostModeOff = true
-    } else {
-      ghostModeOff = false
-    }
+//handles ghost shape toggle
+document.getElementById('ghostShapeCheck').addEventListener('click', () => {
+  if (document.getElementById('ghostShapeCheck').checked === true) {
+    ghostModeOff = true
+    clearSquare(currentShapeObj.curGhostPos)
+  } else {
+    ghostModeOff = false
+    let ghostColorClass = `${currentShapeObj.curShapeName}-ghost`
+    currentShapeObj.curGhostPos.forEach((pos) => {
+      document.getElementById(
+        `pos${pos}`
+      ).className = `grid-square ${ghostColorClass}`
+    })
   }
-  ghostModeCounter++
 })

@@ -46,7 +46,7 @@ This is a web-based browser tetris game to aid with anxiety as a form of distrac
 - [x] ~~Speed up game over time~~
 - [x] ~~Toggle option for ghost shape~~
 - [ ] Add functionality for touchscreen and mouse controls to move and rotate shapes
-- [ ] Keep track of high scores
+- [x] ~~Keep track of high scores~~
 
 ***
 
