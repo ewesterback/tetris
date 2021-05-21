@@ -22,7 +22,7 @@ This is a web-based browser tetris game to aid with anxiety as a form of distrac
 ### *Getting Started*
 * To get started, select play on the launch page.  On the game page, select play. After the game is over, select the start again button to begin again.
 * A Trello board as used to track application and can be viewed [here](https://trello.com/b/u9ycsxfA/project-1).
-* The project has been deployed and can be viewed [here](http://tetris-for-aniexty.surge.sh/)).
+* The project has been deployed and can be viewed [here](http://tetris-for-anxiety.surge.sh/)).
 ***
 
 ### *Screenshots*
