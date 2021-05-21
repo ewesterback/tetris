@@ -681,6 +681,19 @@ const changeToLightMode = () => {
   }
 }
 
+const checkEqualPosArr = (arr1, arr2) => {
+  console.log('----------')
+  for (let i = 0; i < arr1.length; i++) {
+    console.log(`1: ${arr1[i]} - 2: ${arr2[i]} `)
+    if (arr1.some((pos) => pos === arr2[i]) === true) {
+      console.log('true')
+      return true
+    }
+  }
+  console.log('false')
+  return false
+}
+
 // ///////////////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////////////
 // main code
@@ -797,7 +810,6 @@ document.querySelector('#reset-button').onclick = function () {
   resetBoard()
 }
 // handles darkmode toggle
-let darkmodeCounter = 0
 document.getElementById('darkModeCheck').addEventListener('click', () => {
   if (document.getElementById('darkModeCheck').checked === true) {
     darkMode = true
@@ -811,14 +823,31 @@ document.getElementById('darkModeCheck').addEventListener('click', () => {
 document.getElementById('ghostShapeCheck').addEventListener('click', () => {
   if (document.getElementById('ghostShapeCheck').checked === true) {
     ghostModeOff = true
-    clearSquare(currentShapeObj.curGhostPos)
+    if (
+      checkEqualPosArr(
+        currentShapeObj.curGhostPos,
+        currentShapeObj.curPosition
+      ) === false &&
+      gameActive === true
+    ) {
+      console.log('clear')
+      clearSquare(currentShapeObj.curGhostPos)
+    }
   } else {
     ghostModeOff = false
-    let ghostColorClass = `${currentShapeObj.curShapeName}-ghost`
-    currentShapeObj.curGhostPos.forEach((pos) => {
-      document.getElementById(
-        `pos${pos}`
-      ).className = `grid-square ${ghostColorClass}`
-    })
+    if (
+      checkEqualPosArr(
+        currentShapeObj.curGhostPos,
+        currentShapeObj.curPosition
+      ) === false &&
+      gameActive === true
+    ) {
+      let ghostColorClass = `${currentShapeObj.curShapeName}-ghost`
+      currentShapeObj.curGhostPos.forEach((pos) => {
+        document.getElementById(
+          `pos${pos}`
+        ).className = `grid-square ${ghostColorClass}`
+      })
+    }
   }
 })
